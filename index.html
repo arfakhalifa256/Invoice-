@@ -2,8 +2,10 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Invoice CV GIYAT JAYA V2 - Fix Description</title>
+<title>Invoice CV GIYAT JAYA - Firebase</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
 body{background:#f1f5f9;padding:14px}
@@ -17,8 +19,8 @@ input:focus{border-color:#1e90ff;outline:none;background:#f0f9ff}
 .item-card{background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px;margin-top:10px;position:relative}
 .item-card b{font-size:10px;color:#1e90ff}
 .desc-input{background:#fff !important;border:1.5px solid #1e90ff !important;font-weight:600}
-.btn{padding:10px;border:none;border-radius:8px;font-weight:700;cursor:pointer;width:100%;margin-top:8px;font-size:11px}
-.btn-blue{background:#1e90ff;color:#fff}.btn-green{background:#10b981;color:#fff}.btn-red{background:#fee2e2;color:#dc2626;border:1px solid #fecaca}
+.btn{padding:11px;border:none;border-radius:8px;font-weight:700;cursor:pointer;width:100%;margin-top:8px;font-size:11px}
+.btn-blue{background:#1e90ff;color:#fff}.btn-green{background:#10b981;color:#fff}.btn-orange{background:#f59e0b;color:#fff}.btn-red{background:#fee2e2;color:#dc2626;border:1px solid #fecaca}
 #invoicePrint{background:#fff;width:100%;max-width:800px;margin:20px auto;padding:18px;border:1px solid #000}
 .inv-header{display:flex;justify-content:space-between}
 .inv-title{text-align:center;flex:1}
@@ -27,37 +29,43 @@ input:focus{border-color:#1e90ff;outline:none;background:#f0f9ff}
 table{width:100%;border-collapse:collapse;font-size:10px}th,td{border:1px solid #000;padding:6px}th{background:#f1f5f9;text-align:center}
 .terbilang{border:1px solid #000;padding:6px;margin-top:8px;text-align:center;font-size:10px;font-style:italic}
 .ttd{display:flex;justify-content:space-between;margin-top:20px;font-size:10px}
+.list-item{font-size:11px;padding:8px;border-bottom:1px solid #eee;display:flex;justify-content:space-between}
 @media print{body *{visibility:hidden} #invoicePrint,#invoicePrint *{visibility:visible} #invoicePrint{position:absolute;left:0;top:0;width:100%;border:none} .no-print{display:none !important}}
 </style>
 </head>
 <body>
 <div class="container no-print">
   <div class="card">
-    <h2>INPUT INVOICE - UD. ERLANGGA BAJA (FIX DESCRIPTION)</h2>
-    <div class="grid2">
-      <div><label>No. Faktur</label><input id="noFaktur" value="211710 / INV - GJ / X / 26"></div>
+    <h2>INPUT INVOICE - UD. ERLANGGA BAJA + FIREBASE</h2>
+    <div style="background:#ecfdf5;border:1px solid #10b981;padding:8px;border-radius:8px;font-size:10px;text-align:center" id="statusFirebase">🔄 Menghubungkan Firebase...</div>
+    <div class="grid2" style="margin-top:10px">
+      <div><label>No. Faktur</label><input id="noFaktur" value="211710 / INV - ER / X / 26"></div>
       <div><label>Tanggal</label><input type="date" id="tanggal"></div>
       <div><label>No. Pesanan</label><input id="noPesanan"></div>
       <div><label>No. Surat Jalan</label><input id="noSurat"></div>
-      <div><label>Sales</label><input id="sales" value=""></div>
-      <div><label>Kepada Yth</label><input id="kepada" value=""></div>
-      <div><label>Tlp</label><input id="tlp" value=""></div>
+      <div><label>Sales</label><input id="sales" value="Sukatno"></div>
+      <div><label>Kepada Yth</label><input id="kepada" value="Yono"></div>
+      <div><label>Tlp</label><input id="tlp" value="081949591812"></div>
     </div>
-
     <label style="margin-top:16px;background:#dbeafe;padding:8px;border-radius:8px;text-align:center">RINCIAN BARANG - DESCRIPTION FULL</label>
     <div id="items"></div>
     <button class="btn btn-blue" onclick="tambahItem()">+ Tambah Barang Baru</button>
-    
     <div style="margin-top:12px" class="grid2">
       <button class="btn btn-green" onclick="generate()">🔄 GENERATE PREVIEW</button>
+      <button class="btn btn-orange" onclick="simpanFirebase()">☁️ SIMPAN KE FIREBASE</button>
       <button class="btn btn-blue" onclick="window.print()">🖨️ CETAK / PDF</button>
+      <button class="btn btn-red" style="background:#fff" onclick="loadRiwayat()">📂 RIWAYAT INVOICE</button>
+    </div>
+    <div id="riwayat" style="margin-top:12px;display:none" class="card">
+      <h2>RIWAYAT INVOICE TERSIMPAN</h2>
+      <div id="listRiwayat"></div>
     </div>
   </div>
 </div>
 
 <div id="invoicePrint">
   <div class="inv-header">
-    <div style="font-size:9px">Office : Jl. Pondok Betung Raya, Bintaro Tangerang Selatan <br>Telepon : (021) 29483795</div>
+    <div style="font-size:9px">Office : Jl. Pondok Betung Raya, Bintaro Tangerang Selatan <br>Telepon : (021) 25403795</div>
     <div class="inv-title"><b>UD. ERLANGGA BAJA</b><br><b>INVOICE</b></div>
     <div class="inv-box">Kepada Yth :<br><b id="pKepada">Yono</b><br><br>Tlp : <span id="pTlp">081949591812</span></div>
   </div>
@@ -65,12 +73,26 @@ table{width:100%;border-collapse:collapse;font-size:10px}th,td{border:1px solid 
     <div>NO. FAKTUR : <span id="pFaktur"></span><br>TANGGAL : <span id="pTanggal"></span><br>NO. PESANAN : <span id="pPesanan"></span></div>
     <div>NO. SURAT JALAN : <span id="pSurat"></span><br>Sales : <span id="pSales"></span></div>
   </div>
-  <table><thead><tr><th>NO</th><th>Qty</th><th>Unit</th><th style="width:45%">Description</th><th>Price / Unit (Rp)</th><th>Amount (Rp)</th></tr></thead><tbody id="pItems"></tbody><tfoot><tr><td colspan="3" style="font-size:8px" rowspan="4">Catatan: 1. Barang yang sudah dibeli tidak dapat ditukar/dikembalikan.<br>2. Pembayaran Giro/Cheque dianggap lunas bila sudah diuangkan.<br>166002177889 Agus Giyatno (MANDIRI)<br>2740591739 Agus Giyatno (BCA)<br>1660090278783 CV Giyat Jaya (MANDIRI)</td><td>TOTAL</td><td colspan="2" style="text-align:right;font-weight:700" id="pTotal">0</td></tr><tr><td></td><td colspan="2"></td></tr><tr><td></td><td colspan="2"></td></tr><tr><td></td><td colspan="2"></td></tr></tfoot></table>
+  <table><thead><tr><th>NO</th><th>Qty</th><th>Unit</th><th style="width:45%">Description</th><th>Price / Unit (Rp)</th><th>Amount (Rp)</th></tr></thead><tbody id="pItems"></tbody><tfoot><tr><td colspan="3" style="font-size:8px" rowspan="4">Catatan: 1. Barang yang sudah dibeli tidak dapat ditukar/dikembalikan.<br>2. Pembayaran Giro/Cheque dianggap lunas bila sudah diuangkan.<br>160000771789 Agus Gityana (MANDIRI)<br>2740509739 Agus Gityana (BCA)<br>1660003029783 CV. Ciyat Jaya (MANDIRI)</td><td>TOTAL</td><td colspan="2" style="text-align:right;font-weight:700" id="pTotal">0</td></tr><tr><td></td><td colspan="2"></td></tr><tr><td></td><td colspan="2"></td></tr><tr><td></td><td colspan="2"></td></tr></tfoot></table>
   <div class="terbilang">Terbilang : <span id="pTerbilang"></span></div>
   <div class="ttd"><div>Diterima Oleh,<br><br><br>................</div><div>Hormat Kami,<br><br><br>( Sujiono )</div></div>
 </div>
 
 <script>
+const firebaseConfig = {
+  apiKey: "AIzaSyCgkh1SsA-XLN1pLC9htIWBUnHHafBHpFU",
+  authDomain: "invoice-arfa.firebaseapp.com",
+  databaseURL: "https://invoice-arfa-default-rtdb.firebaseio.com",
+  projectId: "invoice-arfa",
+  storageBucket: "invoice-arfa.firebasestorage.app",
+  messagingSenderId: "87314493141",
+  appId: "1:87314493141:web:080f6e85894c7071eafc5c",
+  measurementId: "G-B095SQR7BK"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+document.getElementById('statusFirebase').innerHTML = "✅ Firebase Terhubung: invoice-arfa";
+
 function formatRp(n){return Number(n||0).toLocaleString('id-ID')}
 function terbilang(n){
   const bil=["","Satu","Dua","Tiga","Empat","Lima","Enam","Tujuh","Delapan","Sembilan","Sepuluh","Sebelas"];
@@ -91,23 +113,22 @@ function formatTglIndo(v){if(!v) return new Date().toLocaleDateString('id-ID',{d
 
 function tambahItem(data={qty:100,unit:'Roll',desc:'Kawat Silet BTO-22 Dia. 45cm',price:190000}){
   const wrap=document.getElementById('items');
-  const id=Date.now();
   const el=document.createElement('div'); el.className='item-card';
   el.innerHTML=`
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><b>BARANG #${wrap.children.length+1}</b><button class="btn-red" style="width:auto;padding:4px 10px;margin:0" onclick="this.parentElement.parentElement.remove();generate()">✕ Hapus</button></div>
     <div class="grid2">
       <div><label>Qty</label><input type="number" class="iQty" value="${data.qty}" oninput="generate()"></div>
-      <div><label>Unit (Roll / Pcs / Mtr)</label><input type="text" class="iUnit" value="${data.unit}" oninput="generate()"></div>
+      <div><label>Unit</label><input type="text" class="iUnit" value="${data.unit}" oninput="generate()"></div>
     </div>
-    <div><label style="color:#1e90ff">DESCRIPTION - Nama Barang (Wajib Isi)</label><input type="text" class="iDesc desc-input" value="${data.desc}" placeholder="Contoh: Kawat Silet BTO-22 Dia. 45cm" oninput="generate()"></div>
+    <div><label style="color:#1e90ff">DESCRIPTION</label><input type="text" class="iDesc desc-input" value="${data.desc}" oninput="generate()"></div>
     <div class="grid2">
-      <div><label>Price / Unit (Rp)</label><input type="number" class="iPrice" value="${data.price}" oninput="generate()"></div>
-      <div><label>Amount (Otomatis)</label><input type="text" class="iAmount" readonly style="background:#f1f5f9;font-weight:700"></div>
+      <div><label>Price / Unit</label><input type="number" class="iPrice" value="${data.price}" oninput="generate()"></div>
+      <div><label>Amount</label><input type="text" class="iAmount" readonly style="background:#f1f5f9;font-weight:700"></div>
     </div>
   `;
   wrap.appendChild(el); generate();
 }
-
+let lastTotal=0;
 function generate(){
   document.getElementById('pFaktur').innerText=document.getElementById('noFaktur').value;
   document.getElementById('pTanggal').innerText=formatTglIndo(document.getElementById('tanggal').value);
@@ -116,12 +137,11 @@ function generate(){
   document.getElementById('pSales').innerText=document.getElementById('sales').value;
   document.getElementById('pKepada').innerText=document.getElementById('kepada').value;
   document.getElementById('pTlp').innerText=document.getElementById('tlp').value;
-  
   let html='', total=0;
   document.querySelectorAll('#items .item-card').forEach((r,i)=>{
     const qty=Number(r.querySelector('.iQty').value||0);
     const unit=r.querySelector('.iUnit').value;
-    const desc=r.querySelector('.iDesc').value || '... (isi description)';
+    const desc=r.querySelector('.iDesc').value || '...';
     const price=Number(r.querySelector('.iPrice').value||0);
     const amount=qty*price; total+=amount;
     r.querySelector('.iAmount').value='Rp '+formatRp(amount);
@@ -131,9 +151,45 @@ function generate(){
   document.getElementById('pItems').innerHTML=html;
   document.getElementById('pTotal').innerText=formatRp(total);
   document.getElementById('pTerbilang').innerText=terbilang(total);
+  lastTotal=total;
 }
-document.getElementById('tanggal').valueAsDate=new Date();
-tambahItem();
+function getFormData(){
+  const items=[];
+  document.querySelectorAll('#items .item-card').forEach(r=>{
+    items.push({qty:r.querySelector('.iQty').value,unit:r.querySelector('.iUnit').value,desc:r.querySelector('.iDesc').value,price:r.querySelector('.iPrice').value})
+  });
+  return {noFaktur:document.getElementById('noFaktur').value,tanggal:document.getElementById('tanggal').value,noPesanan:document.getElementById('noPesanan').value,noSurat:document.getElementById('noSurat').value,sales:document.getElementById('sales').value,kepada:document.getElementById('kepada').value,tlp:document.getElementById('tlp').value,items:items,total:lastTotal,terbilang:document.getElementById('pTerbilang').innerText,createdAt:new Date().toISOString()}
+}
+function simpanFirebase(){
+  const data=getFormData();
+  if(!data.kepada){alert('Isi Kepada Yth dulu bos!');return}
+  document.getElementById('statusFirebase').innerHTML="⏳ Menyimpan...";
+  const newRef=db.ref('invoices').push();
+  newRef.set(data).then(()=>{
+    document.getElementById('statusFirebase').innerHTML="✅ Tersimpan: "+data.noFaktur;
+    alert('Berhasil simpan ke Firebase! Faktur: '+data.noFaktur);
+  }).catch(e=>{
+    document.getElementById('statusFirebase').innerHTML="❌ Gagal: "+e.message;
+    alert('Gagal: '+e.message+"\nSet Rules jadi true di Firebase Console");
+  });
+}
+function loadRiwayat(){
+  document.getElementById('riwayat').style.display='block';
+  document.getElementById('listRiwayat').innerHTML='Loading...';
+  db.ref('invoices').limitToLast(20).once('value',snap=>{
+    let html=''; snap.forEach(child=>{const v=child.val(); html+=`<div class="list-item"><div><b>${v.noFaktur}</b> - ${v.kepada} - Rp ${formatRp(v.total)}<br><small>${v.tanggal} | ${v.terbilang}</small></div><button onclick="loadData('${child.key}')" style="padding:4px 8px;font-size:10px" class="btn-blue">LOAD</button></div>`;});
+    if(!html) html='<small>Belum ada data</small>';
+    document.getElementById('listRiwayat').innerHTML=html;
+  });
+}
+function loadData(key){
+  db.ref('invoices/'+key).once('value',snap=>{
+    const v=snap.val();
+    document.getElementById('noFaktur').value=v.noFaktur; document.getElementById('tanggal').value=v.tanggal; document.getElementById('noPesanan').value=v.noPesanan; document.getElementById('noSurat').value=v.noSurat; document.getElementById('sales').value=v.sales; document.getElementById('kepada').value=v.kepada; document.getElementById('tlp').value=v.tlp;
+    document.getElementById('items').innerHTML=''; v.items.forEach(it=>tambahItem(it)); generate(); window.scrollTo(0,0);
+  });
+}
+document.getElementById('tanggal').valueAsDate=new Date(); tambahItem();
 </script>
 </body>
 </html>
