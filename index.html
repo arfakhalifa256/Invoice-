@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Invoice UD ERLANGGA BAJA - Auto + TTD</title>
+<title>Invoice UD ERLANGGA BAJA - Format EB</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
@@ -28,7 +28,6 @@ table{width:100%;border-collapse:collapse;font-size:10px}th,td{border:1px solid 
 .terbilang{border:1px solid #000;padding:6px;margin-top:8px;text-align:center;font-size:10px;font-style:italic}
 .ttd{display:flex;justify-content:space-between;margin-top:20px;font-size:10px}
 .sig-box{border:1px dashed #999;width:100%;height:90px;border-radius:6px;background:#fff;touch-action:none}
-.sig-wrap{text-align:center}
 .list-item{font-size:11px;padding:8px;border-bottom:1px solid #eee;display:flex;justify-content:space-between}
 @media print{body *{visibility:hidden} #invoicePrint,#invoicePrint *{visibility:visible} #invoicePrint{position:absolute;left:0;top:0;width:100%;border:none} .no-print{display:none !important}}
 </style>
@@ -36,13 +35,16 @@ table{width:100%;border-collapse:collapse;font-size:10px}th,td{border:1px solid 
 <body>
 <div class="container no-print">
   <div class="card">
-    <h2>UD. ERLANGGA BAJA - AUTO FAKTUR & SURAT JALAN + TTD</h2>
+    <h2>UD. ERLANGGA BAJA - FORMAT BARU EB</h2>
     <div id="statusFirebase" style="background:#ecfdf5;border:1px solid #10b981;padding:8px;border-radius:8px;font-size:10px;text-align:center">🔄 Firebase...</div>
+    <div style="margin-top:8px;background:#dbeafe;padding:8px;border-radius:8px;font-size:10px;text-align:center">
+      No Faktur Format: <b>02/INV-EB/1026</b> | Surat Jalan: <b>022/SJ-EB/1026</b><br>1026 = Bulan 10 + Tahun 26
+    </div>
     <div class="grid2" style="margin-top:10px">
-      <div><label>No. Faktur (Otomatis)</label><input id="noFaktur" readonly style="background:#e0f2fe;font-weight:700"></div>
-      <div><label>No. Surat Jalan (Otomatis)</label><input id="noSurat" readonly style="background:#fef3c7;font-weight:700"></div>
+      <div><label>No. Faktur (Otomatis dari 02)</label><input id="noFaktur" readonly style="background:#e0f2fe;font-weight:700;font-size:13px"></div>
+      <div><label>No. Surat Jalan (Otomatis dari 022)</label><input id="noSurat" readonly style="background:#fef3c7;font-weight:700;font-size:13px"></div>
       <div><label>Tanggal</label><input type="date" id="tanggal" onchange="autoNumber();generate()"></div>
-      <div><label>No. Pesanan</label><input id="noPesanan" placeholder="Optional"></div>
+      <div><label>No. Pesanan</label><input id="noPesanan" placeholder="-"></div>
       <div><label>Sales</label><input id="sales" value="Sukatno"></div>
       <div><label>Kepada Yth</label><input id="kepada" value="Yono"></div>
       <div><label>Tlp</label><input id="tlp" value="081949591812"></div>
@@ -54,13 +56,13 @@ table{width:100%;border-collapse:collapse;font-size:10px}th,td{border:1px solid 
 
     <label style="margin-top:16px;background:#fef9c3;padding:8px;border-radius:8px;text-align:center">TANDA TANGAN DIGITAL</label>
     <div class="grid2">
-      <div class="sig-wrap"><label>Diterima Oleh</label><canvas id="sig1" class="sig-box"></canvas><button class="btn btn-red" style="padding:4px" onclick="clearSig('sig1')">Hapus TTD Penerima</button></div>
-      <div class="sig-wrap"><label>Hormat Kami</label><canvas id="sig2" class="sig-box"></canvas><button class="btn btn-red" style="padding:4px" onclick="clearSig('sig2')">Hapus TTD Hormat</button></div>
+      <div style="text-align:center"><label>Diterima Oleh</label><canvas id="sig1" class="sig-box"></canvas><button class="btn btn-red" style="padding:4px" onclick="clearSig('sig1')">Hapus</button></div>
+      <div style="text-align:center"><label>Hormat Kami</label><canvas id="sig2" class="sig-box"></canvas><button class="btn btn-red" style="padding:4px" onclick="clearSig('sig2')">Hapus</button></div>
     </div>
 
     <div class="grid2" style="margin-top:12px">
       <button class="btn btn-green" onclick="generate()">🔄 PREVIEW</button>
-      <button class="btn btn-orange" onclick="simpanFirebase()">☁️ SIMPAN FIREBASE</button>
+      <button class="btn btn-orange" onclick="simpanFirebase()">☁️ SIMPAN</button>
       <button class="btn btn-blue" onclick="window.print()">🖨️ CETAK</button>
       <button class="btn btn-red" style="background:#fff" onclick="loadRiwayat()">📂 RIWAYAT</button>
     </div>
@@ -70,7 +72,7 @@ table{width:100%;border-collapse:collapse;font-size:10px}th,td{border:1px solid 
 
 <div id="invoicePrint">
   <div class="inv-header">
-    <div style="font-size:9px">Office : Jl. Pondok Betung Raya, Bintaro<br></div>
+    <div style="font-size:9px">Office : Jl. Pondok Betung Raya, Bintaro</div>
     <div class="inv-title"><b>UD. ERLANGGA BAJA</b><br><b>INVOICE</b></div>
     <div class="inv-box">Kepada Yth :<br><b id="pKepada"></b><br><br>Tlp : <span id="pTlp"></span></div>
   </div>
@@ -78,38 +80,49 @@ table{width:100%;border-collapse:collapse;font-size:10px}th,td{border:1px solid 
     <div>NO. FAKTUR : <span id="pFaktur"></span><br>TANGGAL : <span id="pTanggal"></span><br>NO. PESANAN : <span id="pPesanan"></span></div>
     <div>NO. SURAT JALAN : <span id="pSurat"></span><br>Sales : <span id="pSales"></span></div>
   </div>
-  <table><thead><tr><th>NO</th><th>Qty</th><th>Unit</th><th style="width:45%">Description</th><th>Price/Unit</th><th>Amount</th></tr></thead><tbody id="pItems"></tbody><tfoot><tr><td colspan="3" style="font-size:8px" rowspan="4">Catatan: 1. Barang tidak dapat ditukar/dikembalikan.<br>2. Giro/Cheque lunas bila sudah diuangkan.<br>PUJI WASTITI (MANDIRI) 1640006079166<br>Puji wastiti (BCA) 4740745099<br>Puji wastiti (BRI) 052101009050503</td><td>TOTAL</td><td colspan="2" style="text-align:right;font-weight:700" id="pTotal">0</td></tr><tr><td></td><td colspan="2"></td></tr><tr><td></td><td colspan="2"></td></tr><tr><td></td><td colspan="2"></td></tr></tfoot></table>
+  <table><thead><tr><th>NO</th><th>Qty</th><th>Unit</th><th style="width:45%">Description</th><th>Price/Unit</th><th>Amount</th></tr></thead><tbody id="pItems"></tbody><tfoot><tr><td colspan="3" style="font-size:8px" rowspan="4">Catatan: 1. Barang tidak dapat ditukar/dikembalikan.<br>2. Giro/Cheque lunas bila diuangkan.<br>PUJI WASTITI (MANDIRI) 1640006079166<br>Puji (BCA) 4740745099<br>Puji (BRI) 052101009050503</td><td>TOTAL</td><td colspan="2" style="text-align:right;font-weight:700" id="pTotal">0</td></tr><tr><td></td><td colspan="2"></td></tr><tr><td></td><td colspan="2"></td></tr><tr><td></td><td colspan="2"></td></tr></tfoot></table>
   <div class="terbilang">Terbilang : <span id="pTerbilang"></span></div>
   <div class="ttd">
-    <div class="sig-wrap"><div>Diterima Oleh,</div><img id="pSig1" style="width:140px;height:70px;object-fit:contain;margin:5px 0"><div>................</div></div>
-    <div class="sig-wrap"><div>Hormat Kami,</div><img id="pSig2" style="width:140px;height:70px;object-fit:contain;margin:5px 0"><div>( Sujiono )</div></div>
+    <div style="text-align:center"><div>Diterima Oleh,</div><img id="pSig1" style="width:140px;height:70px;object-fit:contain;margin:5px 0"><div>................</div></div>
+    <div style="text-align:center"><div>Hormat Kami,</div><img id="pSig2" style="width:140px;height:70px;object-fit:contain;margin:5px 0"><div>( Sujiono )</div></div>
   </div>
 </div>
 
 <script>
 const firebaseConfig={apiKey:"AIzaSyCgkh1SsA-XLN1pLC9htIWBUnHHafBHpFU",authDomain:"invoice-arfa.firebaseapp.com",databaseURL:"https://invoice-arfa-default-rtdb.firebaseio.com",projectId:"invoice-arfa",storageBucket:"invoice-arfa.firebasestorage.app",messagingSenderId:"87314493141",appId:"1:87314493141:web:080f6e85894c7071eafc5c"};
 firebase.initializeApp(firebaseConfig);const db=firebase.database();
-document.getElementById('statusFirebase').innerHTML="✅ Firebase Terhubung";
+document.getElementById('statusFirebase').innerHTML="✅ Firebase Terhubung - Format EB Aktif";
 
-function romanMonth(m){return ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII"][m-1]}
+function getBlnThn(){
+  const tgl=document.getElementById('tanggal').valueAsDate||new Date();
+  const bln=String(tgl.getMonth()+1).padStart(2,'0');
+  const thn=String(tgl.getFullYear()).slice(-2);
+  return bln+thn;
+}
 
 function autoNumber(){
-  const tgl=document.getElementById('tanggal').valueAsDate||new Date();
-  const yy=String(tgl.getFullYear()).slice(-2);
-  const mm=romanMonth(tgl.getMonth()+1);
-  // Ambil counter dari localStorage + firebase
-  db.ref('counter/last').once('value').then(snap=>{
-    let last= snap.val()||parseInt(localStorage.getItem('lastFaktur')||"211710");
-    last = last+1;
-    localStorage.setItem('lastFaktur',last);
-    document.getElementById('noFaktur').value=`${last} / INV - ER / ${mm} / ${yy}`;
-    document.getElementById('noSurat').value=`${last} / SJ - ER / ${mm} / ${yy}`;
-    generate();
-  }).catch(()=>{
-    let last=parseInt(localStorage.getItem('lastFaktur')||"211710")+1;
-    localStorage.setItem('lastFaktur',last);
-    document.getElementById('noFaktur').value=`${last} / INV - ER / ${mm} / ${yy}`;
-    document.getElementById('noSurat').value=`${last} / SJ - ER / ${mm} / ${yy}`;
+  const blnThn=getBlnThn();
+  db.ref('counterEB').once('value').then(snap=>{
+    let data=snap.val();
+    let fakturNum=2;
+    let suratNum=22;
+    if(data){
+      fakturNum=data.faktur+1;
+      suratNum=data.surat+1;
+    } else {
+      // cek localStorage fallback
+      fakturNum=parseInt(localStorage.getItem('eb_faktur')||"1")+1;
+      suratNum=parseInt(localStorage.getItem('eb_surat')||"21")+1;
+    }
+    // simpan sementara, final save saat simpanFirebase
+    window._nextFaktur=fakturNum;
+    window._nextSurat=suratNum;
+    const fNum=String(fakturNum).padStart(2,'0');
+    const sNum=String(suratNum).padStart(3,'0');
+    document.getElementById('noFaktur').value=`${fNum}/INV-EB/${blnThn}`;
+    document.getElementById('noSurat').value=`${sNum}/SJ-EB/${blnThn}`;
+    localStorage.setItem('eb_faktur',fakturNum);
+    localStorage.setItem('eb_surat',suratNum);
     generate();
   });
 }
@@ -140,12 +153,9 @@ function generate(){
   });
   for(let k=document.querySelectorAll('#items .item-card').length;k<4;k++)html+=`<tr><td>&nbsp;</td><td></td><td></td><td></td></tr>`;
   document.getElementById('pItems').innerHTML=html;document.getElementById('pTotal').innerText=formatRp(total);document.getElementById('pTerbilang').innerText=terbilang(total);lastTotal=total;
-  // update signature preview
   document.getElementById('pSig1').src=document.getElementById('sig1').toDataURL();
   document.getElementById('pSig2').src=document.getElementById('sig2').toDataURL();
 }
-
-// Signature Pad Simple
 function initSig(id){
   const c=document.getElementById(id);const ctx=c.getContext('2d');function resize(){c.width=c.offsetWidth;c.height=c.offsetHeight;ctx.strokeStyle="#000";ctx.lineWidth=2;ctx.lineCap="round"}resize();
   let draw=false;function pos(e){const r=c.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return{x:t.clientX-r.left,y:t.clientY-r.top}}
@@ -153,7 +163,6 @@ function initSig(id){
   c.addEventListener('mouseup',()=>{draw=false});c.addEventListener('touchstart',e=>{draw=true;const p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);e.preventDefault()},{passive:false});c.addEventListener('touchmove',e=>{if(!draw)return;const p=pos(e);ctx.lineTo(p.x,p.y);ctx.stroke();generate();e.preventDefault()},{passive:false});c.addEventListener('touchend',()=>{draw=false});
 }
 function clearSig(id){const c=document.getElementById(id);c.getContext('2d').clearRect(0,0,c.width,c.height);generate()}
-
 function getFormData(){
   const items=[];document.querySelectorAll('#items .item-card').forEach(r=>{items.push({qty:r.querySelector('.iQty').value,unit:r.querySelector('.iUnit').value,desc:r.querySelector('.iDesc').value,price:r.querySelector('.iPrice').value})});
   return {noFaktur:document.getElementById('noFaktur').value,noSurat:document.getElementById('noSurat').value,tanggal:document.getElementById('tanggal').value,noPesanan:document.getElementById('noPesanan').value,sales:document.getElementById('sales').value,kepada:document.getElementById('kepada').value,tlp:document.getElementById('tlp').value,items,total:lastTotal,terbilang:document.getElementById('pTerbilang').innerText,sig1:document.getElementById('sig1').toDataURL(),sig2:document.getElementById('sig2').toDataURL(),createdAt:new Date().toISOString()}
@@ -161,21 +170,17 @@ function getFormData(){
 function simpanFirebase(){
   const data=getFormData();if(!data.kepada){alert('Isi Kepada Yth');return}
   document.getElementById('statusFirebase').innerHTML="⏳ Menyimpan...";
-  const lastNum=parseInt(data.noFaktur.split('/')[0].trim());
-  db.ref('counter').set({last:lastNum});
-  db.ref('invoices').push().set(data).then(()=>{document.getElementById('statusFirebase').innerHTML="✅ Tersimpan: "+data.noFaktur;alert('Berhasil! Faktur '+data.noFaktur+'\nSurat Jalan '+data.noSurat);autoNumber()}).catch(e=>alert(e.message));
+  db.ref('counterEB').set({faktur:window._nextFaktur||2,surat:window._nextSurat||22});
+  db.ref('invoices').push().set(data).then(()=>{document.getElementById('statusFirebase').innerHTML="✅ Tersimpan: "+data.noFaktur+" | "+data.noSurat;alert('Berhasil!\\n'+data.noFaktur+'\\n'+data.noSurat);autoNumber()}).catch(e=>alert(e.message));
 }
 function loadRiwayat(){
   document.getElementById('riwayat').style.display='block';document.getElementById('listRiwayat').innerHTML='Loading...';
-  db.ref('invoices').limitToLast(20).once('value',snap=>{let html='';snap.forEach(child=>{const v=child.val();html+=`<div class="list-item"><div><b>${v.noFaktur}</b><br>${v.noSurat} - ${v.kepada} - Rp ${formatRp(v.total)}</div><button onclick="loadData('${child.key}')" class="btn-blue" style="width:auto;padding:4px 8px">LOAD</button></div>`});document.getElementById('listRiwayat').innerHTML=html||'<small>Kosong</small>'});
+  db.ref('invoices').limitToLast(20).once('value',snap=>{let html='';snap.forEach(child=>{const v=child.val();html+=`<div class="list-item"><div><b>${v.noFaktur}</b><br>${v.noSurat} - ${v.kepada}</div><button onclick="loadData('${child.key}')" class="btn-blue" style="width:auto;padding:4px 8px">LOAD</button></div>`});document.getElementById('listRiwayat').innerHTML=html||'<small>Kosong</small>'});
 }
 function loadData(key){
   db.ref('invoices/'+key).once('value',snap=>{
     const v=snap.val();document.getElementById('noFaktur').value=v.noFaktur;document.getElementById('noSurat').value=v.noSurat;document.getElementById('tanggal').value=v.tanggal;document.getElementById('noPesanan').value=v.noPesanan;document.getElementById('sales').value=v.sales;document.getElementById('kepada').value=v.kepada;document.getElementById('tlp').value=v.tlp;
     document.getElementById('items').innerHTML='';v.items.forEach(it=>tambahItem(it));generate();
-    if(v.sig1){const img=new Image();img.onload=()=>{document.getElementById('sig1').getContext('2d').drawImage(img,0,0)};img.src=v.sig1}
-    if(v.sig2){const img=new Image();img.onload=()=>{document.getElementById('sig2').getContext('2d').drawImage(img,0,0)};img.src=v.sig2}
-    window.scrollTo(0,0);
   });
 }
 document.getElementById('tanggal').valueAsDate=new Date();initSig('sig1');initSig('sig2');tambahItem();autoNumber();
