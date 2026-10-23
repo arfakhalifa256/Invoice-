@@ -1,33 +1,25 @@
-const CACHE_NAME = "invoice-eb-v2";
-const urlsToCache = [
-  "./",
-  "./index.html",
-  "./manifest.json",
-  "https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap",
-  "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js",
-  "https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"
-];
+const CACHE_NAME = "invoice-eb-v3-fix";
+const urlsToCache = ["./", "./index.html", "./manifest.json"];
 
 self.addEventListener("install", event => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
   );
 });
 
-self.addEventListener("fetch", event => {
-  event.respondWith(
-    caches.match(event.request).then(response => {
-      return response || fetch(event.request);
-    })
+self.addEventListener("activate", event => {
+  event.waitUntil(
+    caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))).then(() => self.clients.claim())
   );
 });
 
-self.addEventListener("activate", event => {
-  event.waitUntil(
-    caches.keys().then(names => {
-      return Promise.all(
-        names.filter(n => n !== CACHE_NAME).map(n => caches.delete(n))
-      );
-    })
+self.addEventListener("fetch", event => {
+  // JANGAN cache Firebase & Google Fonts, ini yang bikin gagal install
+  if (event.request.url.includes("firebase") || event.request.url.includes("googleapis") || event.request.url.includes("gstatic")) {
+    return;
+  }
+  event.respondWith(
+    caches.match(event.request).then(res => res || fetch(event.request))
   );
 });

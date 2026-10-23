@@ -4,7 +4,9 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Invoice UD ERLANGGA BAJA - Format EB</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#0f3057">
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
@@ -183,6 +185,11 @@ function loadData(key){
   });
 }
 document.getElementById('tanggal').valueAsDate=new Date();initSig('sig1');initSig('sig2');tambahItem();autoNumber();
+</script>
+  <script>
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw.js').then(()=>console.log('PWA OK')).catch(e=>console.log(e));
+}
 </script>
 </body>
 </html>

@@ -1,8 +1,10 @@
 {
   "name": "Invoice UD ERLANGGA BAJA",
   "short_name": "Invoice EB",
-  "description": "Invoice & Surat Jalan UD ERLANGGA BAJA - Format EB 022",
-  "start_url": "./index.html",
+  "description": "Invoice & Surat Jalan UD ERLANGGA BAJA",
+  "id": "/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#f1f5f9",
   "theme_color": "#0f3057",
@@ -17,7 +19,8 @@
     {
       "src": "https://cdn-icons-png.flaticon.com/512/888/888859.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
