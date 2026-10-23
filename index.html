@@ -106,25 +106,26 @@ function autoNumber(){
   const blnThn=getBlnThn();
   db.ref('counterEB').once('value').then(snap=>{
     let data=snap.val();
-    let nomor=22; // <--- MULAI DARI 022 BOS
-    if(data){
-      nomor=data.last+1;
+    let lastNomor = 21; // default sebelum 022
+    if(data && data.last){
+      lastNomor = data.last;
     } else {
-      nomor=parseInt(localStorage.getItem('eb_last')||"21")+1;
+      lastNomor = parseInt(localStorage.getItem('eb_last')||"21");
     }
-    window._nextNomor=nomor;
-    const nStr=String(nomor).padStart(3,'0'); // jadi 022, 023, 024
-    document.getElementById('noFaktur').value=`${nStr}/INV-EB/${blnThn}`;
-    document.getElementById('noSurat').value=`${nStr}/SJ-EB/${blnThn}`;
-    localStorage.setItem('eb_last',nomor);
-    generate();
-  }).catch(()=>{
-    let nomor=parseInt(localStorage.getItem('eb_last')||"21")+1;
+    let nomor = lastNomor + 1; // ini hanya untuk TAMPIL, belum disimpan
     window._nextNomor=nomor;
     const nStr=String(nomor).padStart(3,'0');
     document.getElementById('noFaktur').value=`${nStr}/INV-EB/${blnThn}`;
     document.getElementById('noSurat').value=`${nStr}/SJ-EB/${blnThn}`;
-    localStorage.setItem('eb_last',nomor);
+    // JANGAN simpan ke localStorage disini!
+    generate();
+  }).catch(()=>{
+    let lastNomor = parseInt(localStorage.getItem('eb_last')||"21");
+    let nomor = lastNomor + 1;
+    window._nextNomor=nomor;
+    const nStr=String(nomor).padStart(3,'0');
+    document.getElementById('noFaktur').value=`${nStr}/INV-EB/${blnThn}`;
+    document.getElementById('noSurat').value=`${nStr}/SJ-EB/${blnThn}`;
     generate();
   });
 }
@@ -171,8 +172,19 @@ function getFormData(){
 function simpanFirebase(){
   const data=getFormData();if(!data.kepada){alert('Isi Kepada Yth');return}
   document.getElementById('statusFirebase').innerHTML="⏳ Menyimpan...";
-  db.ref('counterEB').set({last:window._nextNomor||22});
-  db.ref('invoices').push().set(data).then(()=>{document.getElementById('statusFirebase').innerHTML="✅ Tersimpan: "+data.noFaktur+" | "+data.noSurat;alert('Berhasil!\\n'+data.noFaktur+'\\n'+data.noSurat);autoNumber()}).catch(e=>alert(e.message));
+  
+  const nomorToSave = window._nextNomor || 22;
+  
+  // Baru simpan counter SETELAH save sukses
+  db.ref('counterEB').set({last: nomorToSave}).then(()=>{
+    localStorage.setItem('eb_last', nomorToSave); // baru update local disini
+  });
+  
+  db.ref('invoices').push().set(data).then(()=>{
+    document.getElementById('statusFirebase').innerHTML="✅ Tersimpan: "+data.noFaktur+" | "+data.noSurat;
+    alert('Berhasil!\n'+data.noFaktur+'\nNomor selanjutnya akan naik otomatis');
+    autoNumber(); // baru naik setelah save
+  }).catch(e=>alert(e.message));
 }
 function loadRiwayat(){
   document.getElementById('riwayat').style.display='block';document.getElementById('listRiwayat').innerHTML='Loading...';
