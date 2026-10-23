@@ -38,10 +38,10 @@ table{width:100%;border-collapse:collapse;font-size:10px}th,td{border:1px solid 
     <h2>UD. ERLANGGA BAJA - FORMAT BARU EB</h2>
     <div id="statusFirebase" style="background:#ecfdf5;border:1px solid #10b981;padding:8px;border-radius:8px;font-size:10px;text-align:center">🔄 Firebase...</div>
     <div style="margin-top:8px;background:#dbeafe;padding:8px;border-radius:8px;font-size:10px;text-align:center">
-      No Faktur Format: <b>02/INV-EB/1026</b> | Surat Jalan: <b>022/SJ-EB/1026</b><br>1026 = Bulan 10 + Tahun 26
+      No Faktur Format: <b>022/INV-EB/1026</b> | Surat Jalan: <b>022/SJ-EB/1026</b><br>1026 = Bulan 10 + Tahun 26
     </div>
     <div class="grid2" style="margin-top:10px">
-      <div><label>No. Faktur (Otomatis dari 02)</label><input id="noFaktur" readonly style="background:#e0f2fe;font-weight:700;font-size:13px"></div>
+      <div><label>No. Faktur (Otomatis dari 022)</label><input id="noFaktur" readonly style="background:#e0f2fe;font-weight:700;font-size:13px"></div>
       <div><label>No. Surat Jalan (Otomatis dari 022)</label><input id="noSurat" readonly style="background:#fef3c7;font-weight:700;font-size:13px"></div>
       <div><label>Tanggal</label><input type="date" id="tanggal" onchange="autoNumber();generate()"></div>
       <div><label>No. Pesanan</label><input id="noPesanan" placeholder="-"></div>
@@ -97,36 +97,35 @@ function getBlnThn(){
   const tgl=document.getElementById('tanggal').valueAsDate||new Date();
   const bln=String(tgl.getMonth()+1).padStart(2,'0');
   const thn=String(tgl.getFullYear()).slice(-2);
-  return bln+thn;
+  return bln+thn; // hasil 1026 untuk Oktober 2026
 }
 
 function autoNumber(){
   const blnThn=getBlnThn();
   db.ref('counterEB').once('value').then(snap=>{
     let data=snap.val();
-    let fakturNum=2;
-    let suratNum=22;
+    let nomor=22; // <--- MULAI DARI 022 BOS
     if(data){
-      fakturNum=data.faktur+1;
-      suratNum=data.surat+1;
+      nomor=data.last+1;
     } else {
-      // cek localStorage fallback
-      fakturNum=parseInt(localStorage.getItem('eb_faktur')||"1")+1;
-      suratNum=parseInt(localStorage.getItem('eb_surat')||"21")+1;
+      nomor=parseInt(localStorage.getItem('eb_last')||"21")+1;
     }
-    // simpan sementara, final save saat simpanFirebase
-    window._nextFaktur=fakturNum;
-    window._nextSurat=suratNum;
-    const fNum=String(fakturNum).padStart(2,'0');
-    const sNum=String(suratNum).padStart(3,'0');
-    document.getElementById('noFaktur').value=`${fNum}/INV-EB/${blnThn}`;
-    document.getElementById('noSurat').value=`${sNum}/SJ-EB/${blnThn}`;
-    localStorage.setItem('eb_faktur',fakturNum);
-    localStorage.setItem('eb_surat',suratNum);
+    window._nextNomor=nomor;
+    const nStr=String(nomor).padStart(3,'0'); // jadi 022, 023, 024
+    document.getElementById('noFaktur').value=`${nStr}/INV-EB/${blnThn}`;
+    document.getElementById('noSurat').value=`${nStr}/SJ-EB/${blnThn}`;
+    localStorage.setItem('eb_last',nomor);
+    generate();
+  }).catch(()=>{
+    let nomor=parseInt(localStorage.getItem('eb_last')||"21")+1;
+    window._nextNomor=nomor;
+    const nStr=String(nomor).padStart(3,'0');
+    document.getElementById('noFaktur').value=`${nStr}/INV-EB/${blnThn}`;
+    document.getElementById('noSurat').value=`${nStr}/SJ-EB/${blnThn}`;
+    localStorage.setItem('eb_last',nomor);
     generate();
   });
 }
-
 function formatRp(n){return Number(n||0).toLocaleString('id-ID')}
 function terbilang(n){const bil=["","Satu","Dua","Tiga","Empat","Lima","Enam","Tujuh","Delapan","Sembilan","Sepuluh","Sebelas"];function toWords(x){x=Math.floor(x);if(x<12)return bil[x];else if(x<20)return toWords(x-10)+" Belas";else if(x<100)return toWords(Math.floor(x/10))+" Puluh "+toWords(x%10);else if(x<200)return "Seratus "+toWords(x-100);else if(x<1000)return toWords(Math.floor(x/100))+" Ratus "+toWords(x%100);else if(x<2000)return "Seribu "+toWords(x-1000);else if(x<1000000)return toWords(Math.floor(x/1000))+" Ribu "+toWords(x%1000);else if(x<1000000000)return toWords(Math.floor(x/1000000))+" Juta "+toWords(x%1000000);else return ""}return (toWords(n).trim()+" Rupiah").replace(/\s+/g,' ')}
 function formatTglIndo(v){if(!v)return new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'});return new Date(v).toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'})}
@@ -170,7 +169,7 @@ function getFormData(){
 function simpanFirebase(){
   const data=getFormData();if(!data.kepada){alert('Isi Kepada Yth');return}
   document.getElementById('statusFirebase').innerHTML="⏳ Menyimpan...";
-  db.ref('counterEB').set({faktur:window._nextFaktur||2,surat:window._nextSurat||22});
+  db.ref('counterEB').set({last:window._nextNomor||22});
   db.ref('invoices').push().set(data).then(()=>{document.getElementById('statusFirebase').innerHTML="✅ Tersimpan: "+data.noFaktur+" | "+data.noSurat;alert('Berhasil!\\n'+data.noFaktur+'\\n'+data.noSurat);autoNumber()}).catch(e=>alert(e.message));
 }
 function loadRiwayat(){
