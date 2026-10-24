@@ -2,206 +2,104 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Invoice UD ERLANGGA BAJA - Format EB</title>
+<title>Form Invoice EB - Fix Amount</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-<link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#0f3057">
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
-body{background:#f1f5f9;padding:14px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#f1f5f9;padding:10px;font-family:'Poppins',sans-serif}
 .container{max-width:900px;margin:0 auto}
-.card{background:#fff;padding:16px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.08);border:1px solid #e2e8f0;margin-bottom:12px}
-h2{font-size:14px;color:#0f3057;margin-bottom:10px;text-align:center}
-label{font-size:10px;font-weight:700;color:#0f3057;display:block;margin-bottom:3px;margin-top:10px;text-transform:uppercase}
-input{width:100%;padding:10px;border:1.5px solid #cbd5e1;border-radius:8px;font-size:12px}
+.card{background:#f1f5f9;padding:14px;border-radius:16px;border:1px solid #e2e8f0;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:12px}
+h2{font-size:10px;color:#0f3057;text-align:center;margin-bottom:10px}
+label{font-size:10px;font-weight:700;color:#334155;display:block;margin:12px 0 6px;text-transform:uppercase}
+input{width:100%;padding:12px 14px;border:1.8px solid #cbd5e1;border-radius:12px;font-size:10px;background:#fff;min-width:0;display:block}
 input:focus{border-color:#1e90ff;outline:none;background:#f0f9ff}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.item-card{background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px;margin-top:10px}
-.desc-input{border:1.5px solid #1e90ff !important;font-weight:600}
-.btn{padding:11px;border:none;border-radius:8px;font-weight:700;cursor:pointer;width:100%;margin-top:8px;font-size:11px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%}
+.grid2>div{min-width:0}
+.item-card{background:#fff;border:1.5px solid #e2e8f0;border-radius:14px;padding:14px;margin-top:12px}
+.iAmount{background:#dbeafe !important;border-color:#3b82f6 !important;color:#0f3057;font-weight:700}
+.total-bar{background:#0f3057;font-size:10px;color:#fff;padding:14px;border-radius:12px;margin-top:12px;display:flex;justify-content:space-between;align-items:center}
+.btn{width:100%;padding:14px;border:none;border-radius:12px;font-weight:700;cursor:pointer;margin-top:10px;font-size:12px}
 .btn-blue{background:#1e90ff;color:#fff}.btn-green{background:#10b981;color:#fff}.btn-orange{background:#f59e0b;color:#fff}.btn-red{background:#fee2e2;color:#dc2626;border:1px solid #fecaca}
-#invoicePrint{background:#fff;width:100%;max-width:800px;margin:20px auto;padding:18px;border:1px solid #000}
-.inv-header{display:flex;justify-content:space-between}
-.inv-title{text-align:center;flex:1}
-.inv-box{border:1px solid #000;padding:6px;font-size:10px;min-width:200px}
-table{width:100%;border-collapse:collapse;font-size:10px}th,td{border:1px solid #000;padding:6px}th{background:#f1f5f9;text-align:center}
-.terbilang{border:1px solid #000;padding:6px;margin-top:8px;text-align:center;font-size:10px;font-style:italic}
-.ttd{display:flex;justify-content:space-between;margin-top:20px;font-size:10px}
-.sig-box{border:1px dashed #999;width:100%;height:90px;border-radius:6px;background:#fff;touch-action:none}
-.list-item{font-size:11px;padding:8px;border-bottom:1px solid #eee;display:flex;justify-content:space-between}
-@media print{body *{visibility:hidden} #invoicePrint,#invoicePrint *{visibility:visible} #invoicePrint{position:absolute;left:0;top:0;width:100%;border:none} .no-print{display:none !important}}
+.btn-hapus-x{background:#fee2e2;color:#dc2626;border:none;width:36px;height:36px;border-radius:10px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.sig-box{width:100%;height:110px;border:1.5px dashed #94a3b8;border-radius:12px;background:#fff;touch-action:none;display:block}
 </style>
 </head>
 <body>
-<div class="container no-print">
-  <div class="card">
-    <h2>UD. ERLANGGA BAJA - FORMAT BARU EB</h2>
-    <div id="statusFirebase" style="background:#ecfdf5;border:1px solid #10b981;padding:8px;border-radius:8px;font-size:10px;text-align:center">🔄 Firebase...</div>
-    <div style="margin-top:8px;background:#dbeafe;padding:8px;border-radius:8px;font-size:10px;text-align:center">
-      No Faktur Format: <b>022/INV-EB/1026</b> | Surat Jalan: <b>022/SJ-EB/1026</b><br>1026 = Bulan 10 + Tahun 26
-    </div>
-    <div class="grid2" style="margin-top:10px">
-      <div><label>No. Faktur (Otomatis dari 022)</label><input id="noFaktur" readonly style="background:#e0f2fe;font-weight:700;font-size:13px"></div>
-      <div><label>No. Surat Jalan (Otomatis dari 022)</label><input id="noSurat" readonly style="background:#fef3c7;font-weight:700;font-size:13px"></div>
-      <div><label>Tanggal</label><input type="date" id="tanggal" onchange="autoNumber();generate()"></div>
-      <div><label>No. Pesanan</label><input id="noPesanan" placeholder="-"></div>
-      <div><label>Sales</label><input id="sales" value="Sukatno"></div>
-      <div><label>Kepada Yth</label><input id="kepada" value="Yono"></div>
-      <div><label>Tlp</label><input id="tlp" value="081949591812"></div>
-    </div>
-
-    <label style="margin-top:16px;background:#dbeafe;padding:8px;border-radius:8px;text-align:center">RINCIAN BARANG</label>
-    <div id="items"></div>
-    <button class="btn btn-blue" onclick="tambahItem()">+ Tambah Barang</button>
-
-    <label style="margin-top:16px;background:#fef9c3;padding:8px;border-radius:8px;text-align:center">TANDA TANGAN DIGITAL</label>
-    <div class="grid2">
-      <div style="text-align:center"><label>Diterima Oleh</label><canvas id="sig1" class="sig-box"></canvas><button class="btn btn-red" style="padding:4px" onclick="clearSig('sig1')">Hapus</button></div>
-      <div style="text-align:center"><label>Hormat Kami</label><canvas id="sig2" class="sig-box"></canvas><button class="btn btn-red" style="padding:4px" onclick="clearSig('sig2')">Hapus</button></div>
-    </div>
-
-    <div class="grid2" style="margin-top:12px">
-      <button class="btn btn-green" onclick="generate()">🔄 PREVIEW</button>
-      <button class="btn btn-orange" onclick="simpanFirebase()">☁️ SIMPAN</button>
-      <button class="btn btn-blue" onclick="window.print()">🖨️ CETAK</button>
-      <button class="btn btn-red" style="background:#fff" onclick="loadRiwayat()">📂 RIWAYAT</button>
-    </div>
-    <div id="riwayat" style="margin-top:12px;display:none" class="card"><h2>RIWAYAT</h2><div id="listRiwayat"></div></div>
-  </div>
+<div class="container"><div class="card">
+<h2>UD. ERLANGGA BAJA - FORM EB </h2>
+<div id="status" style="background:#ecfdf5;border:1px solid #10b981;padding:8px;border-radius:10px;font-size:10px;text-align:center">Firebase...</div>
+<div style="background:#dbeafe;padding:10px;border-radius:10px;font-size:11px;text-align:center;margin-top:10px">No Faktur: <b id="labelFaktur">-</b> | Nomor naik SETELAH SIMPAN</div>
+<div class="grid2" style="margin-top:12px">
+<div><label>No. Faktur</label><input id="noFaktur" readonly style="background:#e0f2fe;font-weight:700"></div>
+<div><label>No. Surat Jalan</label><input id="noSurat" readonly style="background:#fef3c7;font-weight:700"></div>
+<div><label>Tanggal</label><input type="date" id="tanggal" onchange="autoNumber()"></div>
+<div><label>No. Pesanan</label><input id="noPesanan" placeholder="-"></div>
+<div><label>Sales</label><input id="sales" value="Sukatno"></div>
+<div><label>Kepada Yth</label><input id="kepada" value="Yono"></div>
+<div style="grid-column:span 2"><label>Tlp</label><input id="tlp" value="081949591812"></div>
 </div>
-
-<div id="invoicePrint">
-  <div class="inv-header">
-    <div style="font-size:9px">Office : Jl. Pondok Betung Raya, Bintaro</div>
-    <div class="inv-title"><b>UD. ERLANGGA BAJA</b><br><b>INVOICE</b></div>
-    <div class="inv-box">Kepada Yth :<br><b id="pKepada"></b><br><br>Tlp : <span id="pTlp"></span></div>
-  </div>
-  <div style="font-size:10px;margin:8px 0;display:flex;justify-content:space-between">
-    <div>NO. FAKTUR : <span id="pFaktur"></span><br>TANGGAL : <span id="pTanggal"></span><br>NO. PESANAN : <span id="pPesanan"></span></div>
-    <div>NO. SURAT JALAN : <span id="pSurat"></span><br>Sales : <span id="pSales"></span></div>
-  </div>
-  <table><thead><tr><th>NO</th><th>Qty</th><th>Unit</th><th style="width:45%">Description</th><th>Price/Unit</th><th>Amount</th></tr></thead><tbody id="pItems"></tbody><tfoot><tr><td colspan="3" style="font-size:8px" rowspan="4">Catatan: 1. Barang tidak dapat ditukar/dikembalikan.<br>2. Giro/Cheque lunas bila diuangkan.<br>PUJI WASTITI (MANDIRI) 1640006079166<br>Puji Wastiti (BCA) 4740745099<br>Puji Wastiti (BRI) 052101009050503</td><td>TOTAL</td><td colspan="2" style="text-align:right;font-weight:700" id="pTotal">0</td></tr><tr><td></td><td colspan="2"></td></tr><tr><td></td><td colspan="2"></td></tr><tr><td></td><td colspan="2"></td></tr></tfoot></table>
-  <div class="terbilang">Terbilang : <span id="pTerbilang"></span></div>
-  <div class="ttd">
-    <div style="text-align:center"><div>Diterima Oleh,</div><img id="pSig1" style="width:140px;height:70px;object-fit:contain;margin:5px 0"><div>................</div></div>
-    <div style="text-align:center"><div>Hormat Kami,</div><img id="pSig2" style="width:140px;height:70px;object-fit:contain;margin:5px 0"><div>( Sujiono )</div></div>
-  </div>
+<label style="background:#dbeafe;padding:10px;border-radius:10px;text-align:center;margin-top:16px">RINCIAN BARANG</label>
+<div id="items"></div>
+<button class="btn btn-blue" onclick="tambahItem()">+ Tambah Barang</button>
+<div class="total-bar"><span>TOTAL HARGA INPUT</span><b id="totalInput" style="font-size:12px">Rp 0</b></div>
+<div id="terbilangInput" style="background:#fef9c;padding:10px;border-radius:10px;margin-top:8px;font-size:12px;text-align:center;font-style:italic">Nol Rupiah</div>
+<label style="background:#fef9c3;padding:10px;border-radius:10px;text-align:center;margin-top:16px">TANDA TANGAN</label>
+<div class="grid2" style="margin-top:10px">
+<div style="text-align:center"><label>DITERIMA OLEH</label><canvas id="sig1" class="sig-box"></canvas><button class="btn btn-red" style="padding:6px;margin-top:6px" onclick="clearSig('sig1')">Hapus</button></div>
+<div style="text-align:center"><label>HORMAT KAMI</label><canvas id="sig2" class="sig-box"></canvas><button class="btn btn-red" style="padding:6px;margin-top:6px" onclick="clearSig('sig2')">Hapus</button></div>
 </div>
-
+<div class="grid2" style="margin-top:16px">
+<button class="btn btn-green" onclick="bukaPreviewBaru()">👁️ LIHAT INVOICE DI LAYAR BARU</button>
+<button class="btn btn-orange" onclick="simpanFirebase()">☁️ SIMPAN</button>
+<button class="btn btn-blue" style="grid-column:span 2" onclick="loadRiwayat()">📂 RIWAYAT</button>
+</div>
+<div id="riwayat" style="display:none;margin-top:12px" class="card"><div id="listRiwayat"></div></div>
+</div></div>
 <script>
 const firebaseConfig={apiKey:"AIzaSyCgkh1SsA-XLN1pLC9htIWBUnHHafBHpFU",authDomain:"invoice-arfa.firebaseapp.com",databaseURL:"https://invoice-arfa-default-rtdb.firebaseio.com",projectId:"invoice-arfa",storageBucket:"invoice-arfa.firebasestorage.app",messagingSenderId:"87314493141",appId:"1:87314493141:web:080f6e85894c7071eafc5c"};
 firebase.initializeApp(firebaseConfig);const db=firebase.database();
-document.getElementById('statusFirebase').innerHTML="✅ Firebase Terhubung - Format EB Aktif";
-
-function getBlnThn(){
-  const tgl=document.getElementById('tanggal').valueAsDate||new Date();
-  const bln=String(tgl.getMonth()+1).padStart(2,'0');
-  const thn=String(tgl.getFullYear()).slice(-2);
-  return bln+thn; // hasil 1026 untuk Oktober 2026
-}
-
-function autoNumber(){
-  const blnThn=getBlnThn();
-  db.ref('counterEB').once('value').then(snap=>{
-    let data=snap.val();
-    let lastNomor = 21; // default sebelum 022
-    if(data && data.last){
-      lastNomor = data.last;
-    } else {
-      lastNomor = parseInt(localStorage.getItem('eb_last')||"21");
-    }
-    let nomor = lastNomor + 1; // ini hanya untuk TAMPIL, belum disimpan
-    window._nextNomor=nomor;
-    const nStr=String(nomor).padStart(3,'0');
-    document.getElementById('noFaktur').value=`${nStr}/INV-EB/${blnThn}`;
-    document.getElementById('noSurat').value=`${nStr}/SJ-EB/${blnThn}`;
-    // JANGAN simpan ke localStorage disini!
-    generate();
-  }).catch(()=>{
-    let lastNomor = parseInt(localStorage.getItem('eb_last')||"21");
-    let nomor = lastNomor + 1;
-    window._nextNomor=nomor;
-    const nStr=String(nomor).padStart(3,'0');
-    document.getElementById('noFaktur').value=`${nStr}/INV-EB/${blnThn}`;
-    document.getElementById('noSurat').value=`${nStr}/SJ-EB/${blnThn}`;
-    generate();
-  });
-}
+function getBlnThn(){const t=document.getElementById('tanggal').valueAsDate||new Date();return String(t.getMonth()+1).padStart(2,'0')+String(t.getFullYear()).slice(-2);}
+function autoNumber(){const b=getBlnThn();db.ref('counterEB').once('value').then(s=>{let last=21;if(s.val()&&s.val().last)last=s.val().last;else last=parseInt(localStorage.getItem('eb_last')||"21");let n=last+1;window._nextNomor=n;const ns=String(n).padStart(3,'0');document.getElementById('noFaktur').value=`${ns}/INV-EB/${b}`;document.getElementById('noSurat').value=`${ns}/SJ-EB/${b}`;document.getElementById('labelFaktur').innerText=`${ns}/INV-EB/${b}`;});}
 function formatRp(n){return Number(n||0).toLocaleString('id-ID')}
 function terbilang(n){const bil=["","Satu","Dua","Tiga","Empat","Lima","Enam","Tujuh","Delapan","Sembilan","Sepuluh","Sebelas"];function toWords(x){x=Math.floor(x);if(x<12)return bil[x];else if(x<20)return toWords(x-10)+" Belas";else if(x<100)return toWords(Math.floor(x/10))+" Puluh "+toWords(x%10);else if(x<200)return "Seratus "+toWords(x-100);else if(x<1000)return toWords(Math.floor(x/100))+" Ratus "+toWords(x%100);else if(x<2000)return "Seribu "+toWords(x-1000);else if(x<1000000)return toWords(Math.floor(x/1000))+" Ribu "+toWords(x%1000);else if(x<1000000000)return toWords(Math.floor(x/1000000))+" Juta "+toWords(x%1000000);else return ""}return (toWords(n).trim()+" Rupiah").replace(/\s+/g,' ')}
-function formatTglIndo(v){if(!v)return new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'});return new Date(v).toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'})}
-
-function tambahItem(data={qty:100,unit:'Roll',desc:'Kawat Silet BTO-22 Dia. 45cm',price:190000}){
-  const wrap=document.getElementById('items');const el=document.createElement('div');el.className='item-card';
-  el.innerHTML=`<div style="display:flex;justify-content:space-between"><b>BARANG #${wrap.children.length+1}</b><button class="btn-red" style="width:auto;padding:4px 10px;margin:0" onclick="this.parentElement.parentElement.remove();generate()">✕</button></div><div class="grid2"><div><label>Qty</label><input type="number" class="iQty" value="${data.qty}" oninput="generate()"></div><div><label>Unit</label><input type="text" class="iUnit" value="${data.unit}" oninput="generate()"></div></div><div><label>DESCRIPTION</label><input type="text" class="iDesc desc-input" value="${data.desc}" oninput="generate()"></div><div class="grid2"><div><label>Price</label><input type="number" class="iPrice" value="${data.price}" oninput="generate()"></div><div><label>Amount</label><input type="text" class="iAmount" readonly style="background:#f1f5f9;font-weight:700"></div></div>`;
-  wrap.appendChild(el);generate();
+function tambahItem(d={qty:100,unit:'Roll',desc:'Kawat Silet BTO-22 Dia. 45cm',price:190000}){
+const w=document.getElementById('items');const idx=w.children.length+1;
+const el=document.createElement('div');el.className='item-card';
+el.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:10px"><b>BARANG #${idx}</b><button class="btn-hapus-x" onclick="this.closest('.item-card').remove();hitungTotal()">✕</button></div>
+<div class="grid2"><div><label>QTY</label><input type="number" class="iQty" value="${d.qty}" oninput="hitungTotal()"></div><div><label>UNIT</label><input type="text" class="iUnit" value="${d.unit}"></div></div>
+<div><label>DESCRIPTION</label><input type="text" class="iDesc" value="${d.desc}"></div>
+<div class="grid2"><div><label>PRICE</label><input type="number" class="iPrice" value="${d.price}" oninput="hitungTotal()"></div><div><label>AMOUNT</label><input type="text" class="iAmount" readonly placeholder="Otomatis"></div></div>`;
+w.appendChild(el);hitungTotal();
 }
-let lastTotal=0;
-function generate(){
-  document.getElementById('pFaktur').innerText=document.getElementById('noFaktur').value;
-  document.getElementById('pSurat').innerText=document.getElementById('noSurat').value;
-  document.getElementById('pTanggal').innerText=formatTglIndo(document.getElementById('tanggal').value);
-  document.getElementById('pPesanan').innerText=document.getElementById('noPesanan').value||'-';
-  document.getElementById('pSales').innerText=document.getElementById('sales').value;
-  document.getElementById('pKepada').innerText=document.getElementById('kepada').value;
-  document.getElementById('pTlp').innerText=document.getElementById('tlp').value;
-  let html='',total=0;
-  document.querySelectorAll('#items .item-card').forEach((r,i)=>{
-    const qty=Number(r.querySelector('.iQty').value||0);const unit=r.querySelector('.iUnit').value;const desc=r.querySelector('.iDesc').value||'...';const price=Number(r.querySelector('.iPrice').value||0);const amount=qty*price;total+=amount;
-    r.querySelector('.iAmount').value='Rp '+formatRp(amount);
-    html+=`<tr><td style="text-align:center">${i+1}</td><td style="text-align:center">${qty}</td><td>${unit}</td><td><b>${desc}</b></td><td style="text-align:right">${formatRp(price)}</td><td style="text-align:right">${formatRp(amount)}</td></tr>`;
-  });
-  for(let k=document.querySelectorAll('#items .item-card').length;k<4;k++)html+=`<tr><td>&nbsp;</td><td></td><td></td><td></td></tr>`;
-  document.getElementById('pItems').innerHTML=html;document.getElementById('pTotal').innerText=formatRp(total);document.getElementById('pTerbilang').innerText=terbilang(total);lastTotal=total;
-  document.getElementById('pSig1').src=document.getElementById('sig1').toDataURL();
-  document.getElementById('pSig2').src=document.getElementById('sig2').toDataURL();
+function hitungTotal(){
+let total=0;
+document.querySelectorAll('#items .item-card').forEach(c=>{
+const qty=Number(c.querySelector('.iQty').value||0);const price=Number(c.querySelector('.iPrice').value||0);const amount=qty*price;
+c.querySelector('.iAmount').value=amount>0?'Rp '+formatRp(amount):'';total+=amount;
+});
+document.getElementById('totalInput').innerText='Rp '+formatRp(total);
+document.getElementById('terbilangInput').innerText=total>0?terbilang(total):'Nol Rupiah';
+return total;
 }
-function initSig(id){
-  const c=document.getElementById(id);const ctx=c.getContext('2d');function resize(){c.width=c.offsetWidth;c.height=c.offsetHeight;ctx.strokeStyle="#000";ctx.lineWidth=2;ctx.lineCap="round"}resize();
-  let draw=false;function pos(e){const r=c.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return{x:t.clientX-r.left,y:t.clientY-r.top}}
-  c.addEventListener('mousedown',e=>{draw=true;const p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y)});c.addEventListener('mousemove',e=>{if(!draw)return;const p=pos(e);ctx.lineTo(p.x,p.y);ctx.stroke();generate()});
-  c.addEventListener('mouseup',()=>{draw=false});c.addEventListener('touchstart',e=>{draw=true;const p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);e.preventDefault()},{passive:false});c.addEventListener('touchmove',e=>{if(!draw)return;const p=pos(e);ctx.lineTo(p.x,p.y);ctx.stroke();generate();e.preventDefault()},{passive:false});c.addEventListener('touchend',()=>{draw=false});
+function getFormData(){const items=[];document.querySelectorAll('#items .item-card').forEach(r=>{items.push({qty:r.querySelector('.iQty').value,unit:r.querySelector('.iUnit').value,desc:r.querySelector('.iDesc').value,price:r.querySelector('.iPrice').value})});const total=hitungTotal();return{noFaktur:document.getElementById('noFaktur').value,noSurat:document.getElementById('noSurat').value,tanggal:document.getElementById('tanggal').value,noPesanan:document.getElementById('noPesanan').value,sales:document.getElementById('sales').value,kepada:document.getElementById('kepada').value,tlp:document.getElementById('tlp').value,items,total,terbilang:document.getElementById('terbilangInput').innerText,sig1:document.getElementById('sig1').toDataURL(),sig2:document.getElementById('sig2').toDataURL()}}
+function bukaPreviewBaru(){
+  const d=getFormData(); 
+  if(d.items.length==0){alert('Tambah barang dulu bos');return}
+  const jsonStr = JSON.stringify(d);
+  localStorage.setItem('preview_invoice_eb', jsonStr);
+  sessionStorage.setItem('preview_invoice_eb', jsonStr);
+  // Kirim juga lewat hash biar gak hilang di localhost
+  const b64 = btoa(unescape(encodeURIComponent(jsonStr)));
+  window.open('./preview.html#data='+encodeURIComponent(b64),'_blank');
 }
-function clearSig(id){const c=document.getElementById(id);c.getContext('2d').clearRect(0,0,c.width,c.height);generate()}
-function getFormData(){
-  const items=[];document.querySelectorAll('#items .item-card').forEach(r=>{items.push({qty:r.querySelector('.iQty').value,unit:r.querySelector('.iUnit').value,desc:r.querySelector('.iDesc').value,price:r.querySelector('.iPrice').value})});
-  return {noFaktur:document.getElementById('noFaktur').value,noSurat:document.getElementById('noSurat').value,tanggal:document.getElementById('tanggal').value,noPesanan:document.getElementById('noPesanan').value,sales:document.getElementById('sales').value,kepada:document.getElementById('kepada').value,tlp:document.getElementById('tlp').value,items,total:lastTotal,terbilang:document.getElementById('pTerbilang').innerText,sig1:document.getElementById('sig1').toDataURL(),sig2:document.getElementById('sig2').toDataURL(),createdAt:new Date().toISOString()}
-}
-function simpanFirebase(){
-  const data=getFormData();if(!data.kepada){alert('Isi Kepada Yth');return}
-  document.getElementById('statusFirebase').innerHTML="⏳ Menyimpan...";
-  
-  const nomorToSave = window._nextNomor || 22;
-  
-  // Baru simpan counter SETELAH save sukses
-  db.ref('counterEB').set({last: nomorToSave}).then(()=>{
-    localStorage.setItem('eb_last', nomorToSave); // baru update local disini
-  });
-  
-  db.ref('invoices').push().set(data).then(()=>{
-    document.getElementById('statusFirebase').innerHTML="✅ Tersimpan: "+data.noFaktur+" | "+data.noSurat;
-    alert('Berhasil!\n'+data.noFaktur+'\nNomor selanjutnya akan naik otomatis');
-    autoNumber(); // baru naik setelah save
-  }).catch(e=>alert(e.message));
-}
-function loadRiwayat(){
-  document.getElementById('riwayat').style.display='block';document.getElementById('listRiwayat').innerHTML='Loading...';
-  db.ref('invoices').limitToLast(20).once('value',snap=>{let html='';snap.forEach(child=>{const v=child.val();html+=`<div class="list-item"><div><b>${v.noFaktur}</b><br>${v.noSurat} - ${v.kepada}</div><button onclick="loadData('${child.key}')" class="btn-blue" style="width:auto;padding:4px 8px">LOAD</button></div>`});document.getElementById('listRiwayat').innerHTML=html||'<small>Kosong</small>'});
-}
-function loadData(key){
-  db.ref('invoices/'+key).once('value',snap=>{
-    const v=snap.val();document.getElementById('noFaktur').value=v.noFaktur;document.getElementById('noSurat').value=v.noSurat;document.getElementById('tanggal').value=v.tanggal;document.getElementById('noPesanan').value=v.noPesanan;document.getElementById('sales').value=v.sales;document.getElementById('kepada').value=v.kepada;document.getElementById('tlp').value=v.tlp;
-    document.getElementById('items').innerHTML='';v.items.forEach(it=>tambahItem(it));generate();
-  });
-}
+  function simpanFirebase(){const data=getFormData();const n=window._nextNomor||22;db.ref('invoices').push().set({...data,createdAt:new Date().toISOString()}).then(()=>{db.ref('counterEB').set({last:n}).then(()=>{localStorage.setItem('eb_last',n);alert('Tersimpan '+data.noFaktur);autoNumber();})})}
+function loadRiwayat(){document.getElementById('riwayat').style.display='block';db.ref('invoices').limitToLast(20).once('value',s=>{let h='';s.forEach(c=>{const v=c.val();h+=`<div style="display:flex;justify-content:space-between;padding:8px;font-size:11px;border-bottom:1px solid #eee"><div><b>${v.noFaktur}</b><br><small>${v.kepada}</small></div><button onclick="loadData('${c.key}')">LOAD</button></div>`});document.getElementById('listRiwayat').innerHTML=h})}
+function loadData(k){db.ref('invoices/'+k).once('value',s=>{const v=s.val();document.getElementById('items').innerHTML='';v.items.forEach(it=>tambahItem(it));})}
+function initSig(id){const c=document.getElementById(id);const ctx=c.getContext('2d');function resize(){c.width=c.offsetWidth;c.height=c.offsetHeight;ctx.strokeStyle="#000";ctx.lineWidth=2;ctx.lineCap="round"}resize();let d=false;function pos(e){const r=c.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return{x:t.clientX-r.left,y:t.clientY-r.top}}c.addEventListener('mousedown',e=>{d=true;const p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y)});c.addEventListener('mousemove',e=>{if(!d)return;const p=pos(e);ctx.lineTo(p.x,p.y);ctx.stroke()});c.addEventListener('mouseup',()=>d=false);c.addEventListener('touchstart',e=>{d=true;const p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);e.preventDefault()},{passive:false});c.addEventListener('touchmove',e=>{if(!d)return;const p=pos(e);ctx.lineTo(p.x,p.y);ctx.stroke();e.preventDefault()},{passive:false});c.addEventListener('touchend',()=>d=false);}
+function clearSig(id){const c=document.getElementById(id);c.getContext('2d').clearRect(0,0,c.width,c.height)}
 document.getElementById('tanggal').valueAsDate=new Date();initSig('sig1');initSig('sig2');tambahItem();autoNumber();
-</script>
-  <script>
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('./sw.js').then(()=>console.log('PWA OK')).catch(e=>console.log(e));
-}
 </script>
 </body>
 </html>
