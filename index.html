@@ -125,8 +125,14 @@ function clearSig(id,delStorage){
 
 document.getElementById('tanggal').valueAsDate=new Date();initSig('sig1');initSig('sig2');tambahItem();autoNumber();
 </script>
-  <script>
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js');}
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('./sw.js')
+      .then(()=>console.log('SW OK'))
+      .catch(e=>console.log('SW GAGAL', e));
+  });
+}
 </script>
 </body>
 </html>
