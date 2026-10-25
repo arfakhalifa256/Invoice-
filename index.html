@@ -2,173 +2,132 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Form Invoice EB - Load Fix</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<title>Form EB - TTD Auto Save</title>
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#0f3057">
+<link rel="icon" href="./img/icon-192x192.png">
+<link rel="apple-touch-icon" href="./img/icon-192x192.png">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#f1f5f9;padding:10px;font-family:'Poppins',sans-serif}
 .container{max-width:900px;margin:0 auto}
-.card{background:#f1f5f9;padding:14px;border-radius:16px;border:1px solid #e2e8f0;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:12px}
-h2{font-size:12px;color:#0f3057;text-align:center;margin-bottom:10px;font-weight:700}
+.card{background:#f8fafc;padding:14px;border-radius:16px;border:1px solid #e2e8f0;margin-bottom:12px}
+h2{font-size:12px;color:#0f3057;text-align:center;font-weight:700}
 label{font-size:10px;font-weight:700;color:#334155;display:block;margin:12px 0 6px;text-transform:uppercase}
-input{width:100%;padding:12px 14px;border:1.8px solid #cbd5e1;border-radius:12px;font-size:12px;background:#fff;min-width:0;display:block}
-input:focus{border-color:#1e90ff;outline:none;background:#f0f9ff}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%}
-.grid2>div{min-width:0}
+input{width:100%;padding:12px 14px;border:1.8px solid #cbd5e1;border-radius:12px;font-size:12px;background:#fff}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .item-card{background:#fff;border:1.5px solid #e2e8f0;border-radius:14px;padding:14px;margin-top:12px}
-.iAmount{background:#dbeafe !important;border-color:#3b82f6 !important;color:#0f3057;font-weight:700}
-.total-bar{background:#0f3057;font-size:10px;color:#fff;padding:14px;border-radius:12px;margin-top:12px;display:flex;justify-content:space-between;align-items:center}
+.iAmount{background:#dbeafe !important;font-weight:700}
+.total-bar{background:#0f3057;color:#fff;padding:14px;border-radius:12px;display:flex;justify-content:space-between;margin-top:12px}
 .btn{width:100%;padding:14px;border:none;border-radius:12px;font-weight:700;cursor:pointer;margin-top:10px;font-size:12px}
 .btn-blue{background:#1e90ff;color:#fff}.btn-green{background:#10b981;color:#fff}.btn-orange{background:#f59e0b;color:#fff}.btn-red{background:#fee2e2;color:#dc2626;border:1px solid #fecaca}
-.btn-hapus-x{background:#fee2e2;color:#dc2626;border:none;width:36px;height:36px;border-radius:10px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.sig-box{width:100%;height:110px;border:1.5px dashed #94a3b8;border-radius:12px;background:#fff;touch-action:none;display:block}
-.riwayat-item{display:flex;justify-content:space-between;align-items:center;padding:12px 10px;border-bottom:1px solid #e2e8f0;background:#fff;border-radius:10px;margin-bottom:6px}
+.sig-box{width:100%;height:120px;border:2px dashed #94a3b8;border-radius:12px;background:#fff;touch-action:none;display:block}
+.sig-saved{border:2px solid #10b981 !important;background:#ecfdf5 !important}
+.badge-auto{background:#10b981;color:#fff;font-size:9px;padding:3px 8px;border-radius:20px;margin-left:6px}
 </style>
 </head>
 <body>
 <div class="container"><div class="card">
-<h2>UD. ERLANGGA BAJA - FORM EB</h2>
-<div id="status" style="background:#ecfdf5;border:1px solid #10b981;padding:8px;border-radius:10px;font-size:10px;text-align:center">Menghubungkan...</div>
-<div style="background:#dbeafe;padding:10px;border-radius:10px;font-size:11px;text-align:center;margin-top:10px">No Faktur: <b id="labelFaktur">-</b> | Nomor naik SETELAH SIMPAN</div>
+<h2>UD. ERLANGGA BAJA - FORM EB <br><span class="badge-auto">TTD AUTO SAVE</span></h2>
+<div id="status" style="background:#ecfdf5;border:1px solid #10b981;padding:8px;border-radius:10px;font-size:10px;text-align:center;margin-top:10px">Siap</div>
+<div style="background:#dbeafe;padding:10px;border-radius:10px;font-size:11px;text-align:center;margin-top:10px">No Faktur: <b id="labelFaktur">-</b></div>
 <div class="grid2" style="margin-top:12px">
 <div><label>No. Faktur</label><input id="noFaktur" readonly style="background:#e0f2fe;font-weight:700"></div>
 <div><label>No. Surat Jalan</label><input id="noSurat" readonly style="background:#fef3c7;font-weight:700"></div>
 <div><label>Tanggal</label><input type="date" id="tanggal" onchange="autoNumber()"></div>
-<div><label>No. Pesanan</label><input id="noPesanan" placeholder="-"></div>
+<div><label>No. Pesanan</label><input id="noPesanan"></div>
 <div><label>Sales</label><input id="sales" value="Sukatno"></div>
 <div><label>Kepada Yth</label><input id="kepada" value="Yono"></div>
 <div style="grid-column:span 2"><label>Tlp</label><input id="tlp" value="081949591812"></div>
 </div>
-<label style="background:#dbeafe;padding:10px;border-radius:10px;text-align:center;margin-top:16px">RINCIAN BARANG</label>
 <div id="items"></div>
 <button class="btn btn-blue" onclick="tambahItem()">+ Tambah Barang</button>
-<div class="total-bar"><span>TOTAL HARGA INPUT</span><b id="totalInput" style="font-size:13px">Rp 0</b></div>
-<div id="terbilangInput" style="background:#fef9c3;border:1px solid #fde68a;padding:10px;border-radius:10px;margin-top:8px;font-size:11px;text-align:center;font-style:italic">Nol Rupiah</div>
-<label style="background:#fef9c3;padding:10px;border-radius:10px;text-align:center;margin-top:16px">TANDA TANGAN</label>
+<div class="total-bar"><span>TOTAL</span><b id="totalInput">Rp 0</b></div>
+<div id="terbilangInput" style="background:#fef9c3;padding:10px;border-radius:10px;margin-top:8px;font-size:11px;text-align:center;font-style:italic">Nol Rupiah</div>
+
+<label style="background:#dcfce7;padding:10px;border-radius:10px;text-align:center;margin-top:16px;border:1px solid #10b981">✅ TTD OTOMATIS TERSIMPAN - TIDAK PERLU TTD LAGI</label>
 <div class="grid2" style="margin-top:10px">
-<div style="text-align:center"><label>DITERIMA OLEH</label><canvas id="sig1" class="sig-box"></canvas><button class="btn btn-red" style="padding:6px;margin-top:6px" onclick="clearSig('sig1')">Hapus</button></div>
-<div style="text-align:center"><label>HORMAT KAMI</label><canvas id="sig2" class="sig-box"></canvas><button class="btn btn-red" style="padding:6px;margin-top:6px" onclick="clearSig('sig2')">Hapus</button></div>
+<div style="text-align:center"><label>DITERIMA OLEH <span id="sts1" style="color:#10b981;font-size:9px"></span></label><canvas id="sig1" class="sig-box"></canvas><div style="display:flex;gap:6px;margin-top:6px"><button class="btn btn-red" style="flex:1;padding:8px" onclick="clearSig('sig1',true)">Hapus & Ganti</button><button class="btn btn-blue" style="flex:1;padding:8px" onclick="saveSigManual('sig1')">Simpan</button></div></div>
+<div style="text-align:center"><label>HORMAT KAMI <span id="sts2" style="color:#10b981;font-size:9px"></span></label><canvas id="sig2" class="sig-box"></canvas><div style="display:flex;gap:6px;margin-top:6px"><button class="btn btn-red" style="flex:1;padding:8px" onclick="clearSig('sig2',true)">Hapus & Ganti</button><button class="btn btn-blue" style="flex:1;padding:8px" onclick="saveSigManual('sig2')">Simpan</button></div></div>
 </div>
+<div style="background:#eff6ff;padding:10px;border-radius:10px;margin-top:12px;font-size:10px;text-align:center;color:#334155">💡 <b>Tips:</b> TTD cukup sekali, nanti setiap buka form TTD otomatis muncul. Kalau ganti HP, TTD masih ada di Firebase riwayat.</div>
+
 <div class="grid2" style="margin-top:16px">
-<button class="btn btn-green" onclick="bukaPreviewBaru()">👁️ LIHAT INVOICE DI LAYAR BARU</button>
+<button class="btn btn-green" onclick="bukaPreviewBaru()">👁️ LIHAT INVOICE (Stempel Auto)</button>
 <button class="btn btn-orange" onclick="simpanFirebase()">☁️ SIMPAN</button>
 <button class="btn btn-blue" style="grid-column:span 2" onclick="loadRiwayat()">📂 RIWAYAT</button>
 </div>
-<div id="riwayat" style="display:none;margin-top:16px" class="card"><h2 style="font-size:13px">RIWAYAT INVOICE</h2><div id="listRiwayat" style="margin-top:10px">Loading...</div><button class="btn btn-red" onclick="document.getElementById('riwayat').style.display='none'" style="margin-top:10px">Tutup Riwayat</button></div>
+<div id="riwayat" style="display:none;margin-top:16px" class="card"><div id="listRiwayat"></div><button class="btn btn-red" onclick="document.getElementById('riwayat').style.display='none'">Tutup</button></div>
 </div></div>
 <script>
 const firebaseConfig={apiKey:"AIzaSyCgkh1SsA-XLN1pLC9htIWBUnHHafBHpFU",authDomain:"invoice-arfa.firebaseapp.com",databaseURL:"https://invoice-arfa-default-rtdb.firebaseio.com",projectId:"invoice-arfa",storageBucket:"invoice-arfa.firebasestorage.app",messagingSenderId:"87314493141",appId:"1:87314493141:web:080f6e85894c7071eafc5c"};
 firebase.initializeApp(firebaseConfig);const db=firebase.database();
+
 function getBlnThn(){const t=document.getElementById('tanggal').valueAsDate||new Date();return String(t.getMonth()+1).padStart(2,'0')+String(t.getFullYear()).slice(-2);}
-function autoNumber(){
-  const b=getBlnThn();
-  db.ref('counterEB').once('value').then(s=>{
-    let last=21;
-    if(s.val()&&s.val().last) last=s.val().last;
-    else last=parseInt(localStorage.getItem('eb_last')||"21");
-    let n=last+1;window._nextNomor=n;
-    const ns=String(n).padStart(3,'0');
-    document.getElementById('noFaktur').value=`${ns}/INV-EB/${b}`;
-    document.getElementById('noSurat').value=`${ns}/SJ-EB/${b}`;
-    document.getElementById('labelFaktur').innerText=`${ns}/INV-EB/${b}`;
-    document.getElementById('status').innerHTML=`✅ Siap - Next: <b>${ns}/INV-EB/${b}</b>`;
-  });
-}
+function autoNumber(){const b=getBlnThn();db.ref('counterEB').once('value').then(s=>{let last=21;if(s.val()&&s.val().last)last=s.val().last;else last=parseInt(localStorage.getItem('eb_last')||"21");let n=last+1;window._nextNomor=n;const ns=String(n).padStart(3,'0');document.getElementById('noFaktur').value=`${ns}/INV-EB/${b}`;document.getElementById('noSurat').value=`${ns}/SJ-EB/${b}`;document.getElementById('labelFaktur').innerText=`${ns}/INV-EB/${b}`;});}
 function formatRp(n){return Number(n||0).toLocaleString('id-ID')}
 function terbilang(n){const bil=["","Satu","Dua","Tiga","Empat","Lima","Enam","Tujuh","Delapan","Sembilan","Sepuluh","Sebelas"];function toWords(x){x=Math.floor(x);if(x<12)return bil[x];else if(x<20)return toWords(x-10)+" Belas";else if(x<100)return toWords(Math.floor(x/10))+" Puluh "+toWords(x%10);else if(x<200)return "Seratus "+toWords(x-100);else if(x<1000)return toWords(Math.floor(x/100))+" Ratus "+toWords(x%100);else if(x<2000)return "Seribu "+toWords(x-1000);else if(x<1000000)return toWords(Math.floor(x/1000))+" Ribu "+toWords(x%1000);else if(x<1000000000)return toWords(Math.floor(x/1000000))+" Juta "+toWords(x%1000000);else return ""}return (toWords(n).trim()+" Rupiah").replace(/\s+/g,' ')}
+
 function tambahItem(d={qty:100,unit:'Roll',desc:'Kawat Silet BTO-22 Dia. 45cm',price:190000}){
-const w=document.getElementById('items');const idx=w.children.length+1;
-const el=document.createElement('div');el.className='item-card';
-el.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:10px"><b>BARANG #${idx}</b><button class="btn-hapus-x" onclick="this.closest('.item-card').remove();hitungTotal()">✕</button></div>
-<div class="grid2"><div><label>QTY</label><input type="number" class="iQty" value="${d.qty}" oninput="hitungTotal()"></div><div><label>UNIT</label><input type="text" class="iUnit" value="${d.unit}"></div></div>
-<div><label>DESCRIPTION</label><input type="text" class="iDesc" value="${d.desc}"></div>
-<div class="grid2"><div><label>PRICE</label><input type="number" class="iPrice" value="${d.price}" oninput="hitungTotal()"></div><div><label>AMOUNT</label><input type="text" class="iAmount" readonly placeholder="Otomatis"></div></div>`;
+const w=document.getElementById('items');const el=document.createElement('div');el.className='item-card';
+el.innerHTML=`<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:10px"><b>BARANG</b><button onclick="this.closest('.item-card').remove();hitungTotal()" style="background:#fee2e2;color:#dc2626;border:none;width:30px;height:30px;border-radius:8px">✕</button></div>
+<div class="grid2"><div><label>QTY</label><input type="number" class="iQty" value="${d.qty}" oninput="hitungTotal()"></div><div><label>UNIT</label><input class="iUnit" value="${d.unit}"></div></div>
+<div><label>DESC</label><input class="iDesc" value="${d.desc}"></div>
+<div class="grid2"><div><label>PRICE</label><input type="number" class="iPrice" value="${d.price}" oninput="hitungTotal()"></div><div><label>AMOUNT</label><input class="iAmount" readonly></div></div>`;
 w.appendChild(el);hitungTotal();
 }
-function hitungTotal(){
-let total=0;
-document.querySelectorAll('#items .item-card').forEach(c=>{
-const qty=Number(c.querySelector('.iQty').value||0);const price=Number(c.querySelector('.iPrice').value||0);const amount=qty*price;
-c.querySelector('.iAmount').value=amount>0?'Rp '+formatRp(amount):'';total+=amount;
-});
-document.getElementById('totalInput').innerText='Rp '+formatRp(total);
-document.getElementById('terbilangInput').innerText=total>0?terbilang(total):'Nol Rupiah';
-return total;
-}
+function hitungTotal(){let total=0;document.querySelectorAll('#items .item-card').forEach(c=>{const qty=Number(c.querySelector('.iQty').value||0);const price=Number(c.querySelector('.iPrice').value||0);const amount=qty*price;c.querySelector('.iAmount').value=amount>0?'Rp '+formatRp(amount):'';total+=amount;});document.getElementById('totalInput').innerText='Rp '+formatRp(total);document.getElementById('terbilangInput').innerText=total>0?terbilang(total):'Nol Rupiah';return total;}
 function getFormData(){const items=[];document.querySelectorAll('#items .item-card').forEach(r=>{items.push({qty:r.querySelector('.iQty').value,unit:r.querySelector('.iUnit').value,desc:r.querySelector('.iDesc').value,price:r.querySelector('.iPrice').value})});const total=hitungTotal();return{noFaktur:document.getElementById('noFaktur').value,noSurat:document.getElementById('noSurat').value,tanggal:document.getElementById('tanggal').value,noPesanan:document.getElementById('noPesanan').value,sales:document.getElementById('sales').value,kepada:document.getElementById('kepada').value,tlp:document.getElementById('tlp').value,items,total,terbilang:document.getElementById('terbilangInput').innerText,sig1:document.getElementById('sig1').toDataURL(),sig2:document.getElementById('sig2').toDataURL()}}
-function bukaPreviewBaru(){
-  const d=getFormData(); 
-  if(d.items.length==0){alert('Tambah barang dulu bos');return}
-  const jsonStr = JSON.stringify(d);
-  localStorage.setItem('preview_invoice_eb', jsonStr);
-  sessionStorage.setItem('preview_invoice_eb', jsonStr);
-  const b64 = btoa(unescape(encodeURIComponent(jsonStr)));
-  window.open('./preview.html#data='+encodeURIComponent(b64),'_blank');
-}
-function simpanFirebase(){const data=getFormData();const n=window._nextNomor||22;db.ref('invoices').push().set({...data,createdAt:new Date().toISOString()}).then(()=>{db.ref('counterEB').set({last:n}).then(()=>{localStorage.setItem('eb_last',n);document.getElementById('status').innerHTML=`✅ Tersimpan ${data.noFaktur}`;alert('Tersimpan '+data.noFaktur);autoNumber();})})}
 
-// === FIX LOAD RIWAYAT BOS ===
-function loadRiwayat(){
-  document.getElementById('riwayat').style.display='block';
-  document.getElementById('listRiwayat').innerHTML='⏳ Loading...';
-  db.ref('invoices').limitToLast(20).once('value',s=>{
-    if(!s.exists()){document.getElementById('listRiwayat').innerHTML='Kosong bos';return;}
-    let h=''; 
-    let arr=[];
-    s.forEach(c=>{arr.push({key:c.key,val:c.val()})});
-    arr.reverse().forEach(o=>{
-      const v=o.val;
-      h+=`<div class="riwayat-item">
-        <div style="flex:1;min-width:0"><b style="font-size:11px">${v.noFaktur||'-'}</b><br><small style="font-size:10px;color:#555">${v.kepada||'-'} • ${formatTgl(v.tanggal)} • Rp ${formatRp(v.total)}</small></div>
-        <button class="btn btn-blue" style="width:auto;padding:8px 14px;margin:0 0 0 8px;font-size:11px" onclick="loadData('${o.key}')">LOAD</button>
-      </div>`;
-    });
-    document.getElementById('listRiwayat').innerHTML=h;
-  });
+function bukaPreviewBaru(){const d=getFormData();if(d.items.length==0){alert('Tambah barang dulu');return}const jsonStr=JSON.stringify(d);localStorage.setItem('preview_invoice_eb',jsonStr);sessionStorage.setItem('preview_invoice_eb',jsonStr);const b64=btoa(unescape(encodeURIComponent(jsonStr)));window.open('./preview.html#data='+encodeURIComponent(b64),'_blank');}
+function simpanFirebase(){const data=getFormData();const n=window._nextNomor||22;db.ref('invoices').push().set({...data,createdAt:new Date().toISOString()}).then(()=>{db.ref('counterEB').set({last:n}).then(()=>{localStorage.setItem('eb_last',n);alert('Tersimpan '+data.noFaktur);autoNumber();})})}
+function loadRiwayat(){document.getElementById('riwayat').style.display='block';db.ref('invoices').limitToLast(20).once('value',s=>{let h='';let arr=[];s.forEach(c=>{arr.push({key:c.key,val:c.val()})});arr.reverse().forEach(o=>{const v=o.val;h+=`<div style="display:flex;justify-content:space-between;padding:10px;background:#fff;border-radius:10px;margin-bottom:6px"><div><b>${v.noFaktur}</b><br><small>${v.kepada} - Rp ${formatRp(v.total)}</small></div><button class="btn btn-blue" style="width:auto;padding:8px 14px;margin:0" onclick="loadData('${o.key}')">LOAD</button></div>`});document.getElementById('listRiwayat').innerHTML=h})}
+function loadData(k){db.ref('invoices/'+k).once('value',s=>{const v=s.val();document.getElementById('noFaktur').value=v.noFaktur;document.getElementById('noSurat').value=v.noSurat;document.getElementById('labelFaktur').innerText=v.noFaktur;document.getElementById('tanggal').value=v.tanggal;document.getElementById('noPesanan').value=v.noPesanan;document.getElementById('sales').value=v.sales;document.getElementById('kepada').value=v.kepada;document.getElementById('tlp').value=v.tlp;document.getElementById('items').innerHTML='';v.items.forEach(it=>tambahItem(it));hitungTotal();if(v.sig1)loadSigImage('sig1',v.sig1,true);if(v.sig2)loadSigImage('sig2',v.sig2,true);document.getElementById('riwayat').style.display='none';})}
+
+// === TTD AUTO SAVE SYSTEM ===
+function initSig(id){
+  const c=document.getElementById(id);const ctx=c.getContext('2d');
+  function resize(){const dpr=window.devicePixelRatio||1;const rect=c.getBoundingClientRect();c.width=rect.width*dpr;c.height=rect.height*dpr;ctx.scale(dpr,dpr);ctx.strokeStyle="#000";ctx.lineWidth=2;ctx.lineCap="round";}
+  resize();
+  // Load saved sig
+  const saved=localStorage.getItem('eb_'+id);
+  if(saved){loadSigImage(id,saved,false);document.getElementById(id=='sig1'?'sts1':'sts2').innerText='(Auto Loaded)';c.classList.add('sig-saved');}
+  let drawing=false;
+  function pos(e){const r=c.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return{x:t.clientX-r.left,y:t.clientY-r.top};}
+  function start(e){drawing=true;const p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);e.preventDefault();}
+  function move(e){if(!drawing)return;const p=pos(e);ctx.lineTo(p.x,p.y);ctx.stroke();e.preventDefault();}
+  function end(){if(!drawing)return;drawing=false;autoSaveSig(id);}
+  c.addEventListener('mousedown',start);c.addEventListener('mousemove',move);c.addEventListener('mouseup',end);c.addEventListener('mouseleave',end);
+  c.addEventListener('touchstart',start,{passive:false});c.addEventListener('touchmove',move,{passive:false});c.addEventListener('touchend',end);
 }
-function formatTgl(v){if(!v) return '-'; try{return new Date(v).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'})}catch(e){return v}}
-// === FIX LOAD DATA JALAN ===
-function loadData(key){
-  db.ref('invoices/'+key).once('value',s=>{
-    const v=s.val();
-    if(!v){alert('Data tidak ditemukan');return;}
-    // isi semua field
-    document.getElementById('noFaktur').value=v.noFaktur||'';
-    document.getElementById('noSurat').value=v.noSurat||'';
-    document.getElementById('labelFaktur').innerText=v.noFaktur||'-';
-    document.getElementById('tanggal').value=v.tanggal||'';
-    document.getElementById('noPesanan').value=v.noPesanan||'';
-    document.getElementById('sales').value=v.sales||'Sukatno';
-    document.getElementById('kepada').value=v.kepada||'Yono';
-    document.getElementById('tlp').value=v.tlp||'081949591812';
-    // barang
-    document.getElementById('items').innerHTML='';
-    if(v.items && v.items.length>0){
-      v.items.forEach(it=>tambahItem(it));
-    }else{
-      tambahItem();
-    }
-    hitungTotal();
-    // TTD kalau ada
-    if(v.sig1){ loadSigImage('sig1', v.sig1); }
-    if(v.sig2){ loadSigImage('sig2', v.sig2); }
-    document.getElementById('riwayat').style.display='none';
-    document.getElementById('status').innerHTML=`📂 Loaded: <b>${v.noFaktur}</b> - Edit lalu SIMPAN lagi`;
-    window.scrollTo({top:0,behavior:'smooth'});
-  });
+function autoSaveSig(id){
+  const c=document.getElementById(id);
+  const data=c.toDataURL();
+  // cek kosong atau tidak
+  if(data.length<2000) return; // terlalu kecil = kosong
+  localStorage.setItem('eb_'+id,data);
+  c.classList.add('sig-saved');
+  document.getElementById(id=='sig1'?'sts1':'sts2').innerText='✓ Tersimpan Auto';
+  console.log('TTD '+id+' auto saved');
 }
-function loadSigImage(canvasId, dataUrl){
-  const c=document.getElementById(canvasId);
-  const ctx=c.getContext('2d');
-  const img=new Image();
-  img.onload=function(){ctx.clearRect(0,0,c.width,c.height);ctx.drawImage(img,0,0,c.width,c.height);}
+function saveSigManual(id){autoSaveSig(id);alert('TTD '+id+' tersimpan, nanti auto muncul terus bos');}
+function loadSigImage(id,dataUrl,isSave){
+  const c=document.getElementById(id);const ctx=c.getContext('2d');
+  const img=new Image();img.onload=function(){ctx.clearRect(0,0,c.width,c.height);const r=c.getBoundingClientRect();ctx.drawImage(img,0,0,r.width,r.height);if(isSave){localStorage.setItem('eb_'+id,dataUrl);c.classList.add('sig-saved');}};
   img.src=dataUrl;
 }
-function initSig(id){const c=document.getElementById(id);const ctx=c.getContext('2d');function resize(){c.width=c.offsetWidth;c.height=c.offsetHeight;ctx.strokeStyle="#000";ctx.lineWidth=2;ctx.lineCap="round"}resize();let d=false;function pos(e){const r=c.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return{x:t.clientX-r.left,y:t.clientY-r.top}}c.addEventListener('mousedown',e=>{d=true;const p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y)});c.addEventListener('mousemove',e=>{if(!d)return;const p=pos(e);ctx.lineTo(p.x,p.y);ctx.stroke()});c.addEventListener('mouseup',()=>d=false);c.addEventListener('touchstart',e=>{d=true;const p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);e.preventDefault()},{passive:false});c.addEventListener('touchmove',e=>{if(!d)return;const p=pos(e);ctx.lineTo(p.x,p.y);ctx.stroke();e.preventDefault()},{passive:false});c.addEventListener('touchend',()=>d=false);window.addEventListener('resize',()=>{});}
-function clearSig(id){const c=document.getElementById(id);const ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height)}
+function clearSig(id,delStorage){
+  const c=document.getElementById(id);const ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);c.classList.remove('sig-saved');
+  if(delStorage){localStorage.removeItem('eb_'+id);document.getElementById(id=='sig1'?'sts1':'sts2').innerText='(Hapus, gambar baru)';}
+}
+
 document.getElementById('tanggal').valueAsDate=new Date();initSig('sig1');initSig('sig2');tambahItem();autoNumber();
+</script>
+  <script>
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js');}
 </script>
 </body>
 </html>

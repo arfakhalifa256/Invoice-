@@ -1,122 +1,78 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-<title>Preview Invoice - HP Fix</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preview EB Final</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',Arial,sans-serif}
-body{background:#f1f5f9;padding:8px;padding-bottom:9px}
-.header{display:flex;justify-content:space-between;align-items:flex-start}
-.header-left{font-size:7.5px;line-height:1.4;width:200px}
-.header-center{text-align:center;flex:1;padding-top:4px}
-.header-center b{font-size:9px;display:block}
-.header-center div{font-size:9px;font-weight:700;margin-top:2px}
-.header-right{width:180px;border:1.2px solid #000;padding:6px 8px;font-size:8px;line-height:1.5}
-  /* FIX UTAMA SEJAJAR BOX KEPADA */
-.meta{display:flex;justify-content:space-between;margin-top:14px;font-size:8px;line-height:1.7;align-items:flex-start}
-.meta-left{flex:1}
-.meta-right{width:180px;text-align:left; /* biar garis kiri pas sama box Kepada */}
-table{width:100%;border-collapse:collapse;margin-top:8px;border:1.5px solid #000}
-th,td{border:1px solid #000;padding:6px 5px;font-size:8px}
-th{background:#fff;text-align:center;font-weight:700;font-size:7.5px}
-.catatan{font-size:6.5px;line-height:1.4;text-align:left}
-.terbilang{border:1.5px solid #000;border-top:none;padding:7px;text-align:center;font-size:7.5px;font-style:italic}
-  #invoicePrint{background:#fff;max-width:800px;margin:0 auto;padding:12px;border:1px solid #000}
-.inv-header{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start}
-.inv-title{flex:1;min-width:120px;text-align:center;font-weight:700;line-height:1.2}
-.inv-box{border:1px solid #000;padding:6px;font-size:10px;min-width:140px;max-width:200px;word-break:break-word}
-.info{font-size:10px;margin:8px 0;display:grid;grid-template-columns:1fr 1fr;gap:4px;line-height:1.4}
-h2{background:#f1f5f9;font-size:12px}
-
-/* WRAPPER BIAR TABEL BISA DIGESER DI HP */
-.table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid #000}
-.table-wrap table{width:100%;min-width:600px;border-collapse:collapse;font-size:10px}
-th,td{border:1px solid #000;padding:6px 4px;vertical-align:top;word-wrap:break-word}
-th{background:#f1f5f9;text-align:center;font-size:10px}
-td:nth-child(1){width:5%;text-align:left}
-td:nth-child(2){width:8%;text-align:left}
-td:nth-child(3){width:10%;text-align:left}
-td:nth-child(4){width:37%}
-td:nth-child(5){width:20%;text-align:right}
-td:nth-child(6){width:20%;text-align:right}
-
-.terbilang{border:1px solid #000;padding:8px;margin-top:8px;text-align:center;font-size:10px;font-style:italic;word-break:break-word}
-.ttd{display:flex;justify-content:space-between;margin-top:18px;font-size:10px;gap:10px}
-.ttd>div{flex:1;text-align:center}
-.btn-bar{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:10px;display:flex;gap:8px;box-shadow:0 -2px 10px rgba(0,0,0,.15)}
-.btn{flex:1;padding:14px;border:none;border-radius:10px;font-weight:700;cursor:pointer;font-size:13px}
-.btn-back{background:#e2e8f0}.btn-print{background:#0f3057;color:#fff}
-
-/* KHUSUS HP */
-@media (max-width:480px){
-  body{padding:4px}
-  #invoicePrint{padding:8px}
-  .inv-header{flex-direction:column}
-  .inv-title{order:-1;width:100%;font-size:14px;margin-bottom:4px}
-  .inv-box{max-width:100%;width:100%}
-  .info{grid-template-columns:1fr;font-size:9px}
-  .table-wrap table{font-size:9px;min-width:550px}
-  th,td{padding:5px 3px}
-  .ttd img{width:100px !important;height:60px !important}
-  .btn{font-size:12px;padding:12px}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#f1f5f9;padding:6px;padding-bottom:80px}
+#invoicePrint{background:#fff;max-width:800px;margin:0 auto;padding:12px;border:1.5px solid #000}
+.header{display:flex;justify-content:space-between;gap:8px}
+.header-left{width:260px;display:flex;gap:8px;font-size:8px;line-height:1.3}
+.header-left img{width:68px;height:68px;object-fit:contain;flex-shrink:0}
+.header-center{flex:1;text-align:center;font-weight:800;font-size:14px;padding-top:20px}
+.header-right{width:160px;border:1.2px solid #000;padding:6px;font-size:8px;line-height:1.4}
+.meta{display:flex;justify-content:space-between;font-size:8.5px;margin-top:10px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin-top:10px;border:1.5px solid #000}
+th,td{border:1px solid #000;padding:5px;font-size:8px}
+th{text-align:center;background:#f8fafc}
+.terbilang{border:1.5px solid #000;border-top:none;padding:6px;text-align:center;font-size:8px;font-style:italic}
+.footer{ display:flex; justify-content:space-between; margin-top:28px; font-size:8.5px; }
+.footer>div{ flex:2; text-align:center; }
+.td-stamp-wrap{ position:relative; width:160px; height:85px; margin:0 auto; }
+#pSig2{ position:absolute; left:50%; top:0; transform:translateX(-50%); width:130px; height:65px; object-fit:contain; z-index:3; }
+#stempelBaja{
+  position:absolute;
+  left: 38%;
+  top: 5px;
+  transform:translateX(-50%) rotate(-14deg);
+  width:52px;
+  height:52px;
+  opacity:0.78;
+  z-index:1;
+  pointer-events:none;
+  mix-blend-mode: multiply;
 }
-@media print{.btn-bar{display:none} body{background:#fff;padding:0} #invoicePrint{border:none;max-width:100%} .table-wrap{overflow:visible;border:none} .table-wrap table{min-width:0;width:100%}}
+.btn-bar{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:10px;display:flex;gap:8px;box-shadow:0 -2px 10px rgba(0,0,0,.2)}
+.btn{flex:1;padding:12px;border:none;border-radius:8px;font-weight:700}
+.btn-back{background:#e2e8f0}.btn-print{background:#0f3057;color:#fff}
+@media print{.btn-bar{display:none} body{background:#fff;padding:0} #invoicePrint{border:none}}
+@media(max-width:500px){.header{flex-wrap:wrap}.header-center{order:-1;width:100%;padding:0 0 8px}.header-right{width:100%}.meta{flex-direction:column}}
 </style>
 </head>
 <body>
-  
-  <div id="invoicePrint">
-     
+<div id="invoicePrint">
 <div class="header">
- 
-<div class="header-left"> <h2>UD ERLANGGA</h2><br>Office : <br>Jl. Pondok Betung Raya, Bintaro Tangerang Selatan<br></div>
+<div class="header-left">
+<img src="./img/logo.png" onerror="this.src='./logo.png'">
+<div><b>UD. ERLANGGA BAJA</b><br>Baja & Konstruksi<br>Office: Jl. Pondok Betung Raya, Bintaro Tangerang Selatan<br><br><span style="color:#666"></span></div>
+</div>
 <div class="header-center">INVOICE</div>
-<div class="header-right">Kepada Yth :<br><b id="pKepada">Yono</b><br><br><br>Tlp : <span id="pTlp">081949591812</span></div>
+<div class="header-right">Kepada Yth:<br><b id="pKepada">-</b><br><br>Tlp: <span id="pTlp">-</span></div>
 </div>
 <div class="meta">
-<div class="meta-left">
-NO. FAKTUR : <b id="pFaktur">039/INV/EB/1025</b><br>
-TANGGAL : <span id="pTanggal">23 Oktober 2026</span><br>
-NO. PESANAN : <span id="pPesanan">-</span>
+<div>NO. FAKTUR: <b id="pFaktur">-</b><br>TANGGAL: <span id="pTanggal">-</span><br>NO. PESANAN: <span id="pPesanan">-</span></div>
+<div>NO. SURAT JALAN: <span id="pSurat">-</span><br>Sales: <span id="pSales">-</span></div>
 </div>
-<div class="meta-right">
-NO. SURAT JALAN : <span id="pSurat">039/SJ-EB/1025</span><br>
-Sales : <span id="pSales">Sukatno</span>
-</div>
-</div>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>NO</th><th>Qty</th><th>Unit</th><th>Description</th><th>Price/Unit</th><th>Amount</th></tr></thead>
-      <tbody id="pItems"></tbody>
-      <tfoot><tr><td colspan="3" style="font-size:8px">Catatan: <br>1.Barang tidak dapat ditukar/dikembalikan.</br> <br>2.Pembayaran melalui Rekening :</br><br><b></b>PUJI WASTITI (MANDIRI) 1640006079166<br>PUJI WASTITI (BCA) 4740745099<br>PUJI WASTITI (BRI) 052101009050503</td><td style="text-align:center">TOTAL</td><td colspan="2" style="text-align:right;font-weight:700" id="pTotal"></td></tr></tfoot>
-    </table>
-  </div>
-
-  <div class="terbilang">Terbilang : <span id="pTerbilang"></span></div>
-  <div class="ttd">
-    <div><div>Diterima Oleh,</div><img id="pSig1" style="width:120px;height:70px;object-fit:contain;margin:6px 0"><div>................</div></div>
-    <div><div>Hormat Kami,</div><img id="pSig2" style="width:120px;height:70px;object-fit:contain;margin:6px 0"><div>( Sujiono )</div></div>
+<table><thead><tr><th>NO</th><th>Qty</th><th>Unit</th><th>Description</th><th>Price/Unit</th><th>Amount</th></tr></thead><tbody id="pItems"></tbody><tfoot><tr><td colspan="3" style="font-size:7px">Catatan: <br>1. Barang tidak dapat ditukar/dikembalikan.<br><br>2. Pembayaran Rek: <br><b>PUJI WASTITI (MANDIRI) 1640006079166<br>PUJI WASTITI(BCA) 4740745099<br>PUJI WASTITI(BRI) 052101009050503</b><br></td><td style="text-align:center;font-weight:700">TOTAL</td><td colspan="2" style="text-align:right;font-weight:700" id="pTotal"></td></tr></tfoot></table>
+<div class="terbilang">Terbilang: <i id="pTerbilang"></i></div>
+<div class="footer">
+  <div>Diterima Oleh,<br><br><img id="pSig1" style="width:120px;height:70px;object-fit:contain"><br>(................)</div>
+  <div>Hormat Kami,<br>
+    <div class="td-stamp-wrap">
+      <img id="pSig2">
+      <img id="stempelBaja" src="./img/stempel.png" onerror="this.src='./stempel.png'">
+    </div>
+    ( Sujiono )
   </div>
 </div>
-
-<div class="btn-bar">
-  <button class="btn btn-back" onclick="window.close(); if(window.closed==false) history.back()">← KEMBALI</button>
-  <button class="btn btn-print" onclick="window.print()">🖨️ CETAK / PDF</button>
-</div>
-
+<div class="btn-bar"><button class="btn btn-back" onclick="history.back()">← KEMBALI</button><button class="btn btn-print" onclick="window.print()">CETAK</button></div>
 <script>
 function formatRp(n){return Number(n||0).toLocaleString('id-ID')}
-function formatTgl(v){if(!v)return new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'});return new Date(v).toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'})}
-const raw=localStorage.getItem('preview_invoice_eb');
-if(!raw){document.body.innerHTML='<h2 style="text-align:center;margin-top:50px">Tidak ada data preview<br><small style="font-size:12px">Buka dari halaman form dulu</small></h2>'}
-else{
-const v=JSON.parse(raw);
-document.getElementById('pFaktur').innerText=v.noFaktur;document.getElementById('pSurat').innerText=v.noSurat;document.getElementById('pTanggal').innerText=formatTgl(v.tanggal);document.getElementById('pPesanan').innerText=v.noPesanan||'-';document.getElementById('pSales').innerText=v.sales;document.getElementById('pKepada').innerText=v.kepada;document.getElementById('pTlp').innerText=v.tlp;
-let html='';v.items.forEach((it,i)=>{const a=Number(it.qty)*Number(it.price);html+=`<tr><td style="text-align:center">${i+1}</td><td style="text-align:center">${it.qty}</td><td>${it.unit}</td><td><b>${it.desc}</b></td><td style="text-align:right">${formatRp(it.price)}</td><td style="text-align:right">${formatRp(a)}</td></tr>`});
-document.getElementById('pItems').innerHTML=html;document.getElementById('pTotal').innerText=formatRp(v.total);document.getElementById('pTerbilang').innerText=v.terbilang;document.getElementById('pSig1').src=v.sig1;document.getElementById('pSig2').src=v.sig2;
-}
+function formatTgl(v){return v?new Date(v).toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'}):new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'})}
+let raw=location.hash.includes('data=')?(()=>{try{return decodeURIComponent(escape(atob(decodeURIComponent(location.hash.split('data=')[1]))))}catch(e){return null}})():null;
+if(!raw) raw=localStorage.getItem('preview_invoice_eb')||sessionStorage.getItem('preview_invoice_eb');
+if(raw){const v=JSON.parse(raw);document.getElementById('pKepada').innerText=v.kepada;document.getElementById('pTlp').innerText=v.tlp;document.getElementById('pFaktur').innerText=v.noFaktur;document.getElementById('pSurat').innerText=v.noSurat;document.getElementById('pTanggal').innerText=formatTgl(v.tanggal);document.getElementById('pPesanan').innerText=v.noPesanan||'-';document.getElementById('pSales').innerText=v.sales;let h='';v.items.forEach((it,i)=>{h+=`<tr><td style="text-align:center">${i+1}</td><td style="text-align:center">${it.qty}</td><td>${it.unit}</td><td><b>${it.desc}</b></td><td style="text-align:right">${formatRp(it.price)}</td><td style="text-align:right">${formatRp(it.qty*it.price)}</td></tr>`});document.getElementById('pItems').innerHTML=h;document.getElementById('pTotal').innerText=formatRp(v.total);document.getElementById('pTerbilang').innerText=v.terbilang;let s1=v.sig1&&v.sig1.length>1000?v.sig1:localStorage.getItem('eb_sig1');let s2=v.sig2&&v.sig2.length>1000?v.sig2:localStorage.getItem('eb_sig2');if(s1)document.getElementById('pSig1').src=s1;if(s2)document.getElementById('pSig2').src=s2;}
 </script>
 </body>
 </html>
